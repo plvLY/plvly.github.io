@@ -1,3 +1,4 @@
+import Icons from 'unplugin-icons/vite'
 export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: [
@@ -38,5 +39,13 @@ export default defineNuxtConfig({
         pathPrefix: false,
       },
     ],
+  },
+  vite: {
+    plugins: [
+      Icons({
+        // the feature below is experimental ⬇️
+        autoInstall: true
+      })
+    ]
   }
 })
