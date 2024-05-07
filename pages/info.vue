@@ -9,7 +9,7 @@ const props = {
 
 const index = computed(() => +props.no)
 
-let size = useStorage('size', 20)
+let size = useStorage('size', 200)
 </script>
 
 <template>
