@@ -45,7 +45,7 @@ function slug(name: string): string {
           target="_blank"
           :title="item.name"
         >
-          <div class="text-3xl opacity-50 pt-2 pr-15" :class="item.icon || 'i-mdi-projector'" />
+          <div class="text-3xl opacity-50 pt-2 pr-15 " :class="item.icon || 'i-carbon-unknown'" />
           <div class="flex-auto">
             <div class="text-normal">{{ item.name }}</div>
             <div class="desc text-sm opacity-50 font-normal" v-html="item.desc" />

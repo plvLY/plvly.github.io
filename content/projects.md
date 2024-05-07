@@ -4,9 +4,9 @@ description: 项目列表
 projects: 
     Current Focus:
       - name: plv.app
-        link: 'https://plv.netlify.app/'
+        link: 'https://github.com/plvLY/plvly.github.io'
         desc: '个人站点'
-        icon: 'i-mdi-account-network'
+        icon: 'i-carbon-unknown'
       - name: 'Nuxt Playground'
         link: 'https://github.com/nuxt/learn.nuxt.com'
         desc: 'Interactive Playground for learning Nuxt'
@@ -14,12 +14,11 @@ projects:
       - name: 'Nuxt DevTools'
         link: 'https://github.com/nuxt/devtools'
         desc: 'Unleash Nuxt Developer Experience'
-        icon: 'i-mdi-abjad-hebrew'
     前端:
       - name: plv.app
         link: 'https://plv.netlify.app/'
         desc: '个人站点'
-        icon: 'i-mdi-account-network'
+        icon: 'i-carbon-network1'
     Java:
       - name: test001后端
         link: 'https://plv.netlify.app'
