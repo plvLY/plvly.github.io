@@ -47,8 +47,5 @@ export default defineNuxtConfig({
         autoInstall: true
       })
     ]
-  },
-  plugins: [
-    '~/plugins/baidu',
-  ]
+  }
 })

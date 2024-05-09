@@ -21,6 +21,11 @@ if (logInfo.value){
   logInfo.value = !logInfo.value
 }
 // console.log(logInfo.value)
+// definePageMeta({
+//   middleware: ["ip-logger"]
+// })
+const count = useState('ips')?.value
+console.log(count?.length);
 </script>
 
 <template>
