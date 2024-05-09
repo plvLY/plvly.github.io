@@ -20,12 +20,9 @@ console.log(website_info)
 | [`Github`](https://github.com/plvLY){:target="_blank"}    | 个人代码仓库-国外Github           |
 | `主题`                                                      | 黑夜&明亮                     |
 
-> 正在更新···
-- [ ] `项目`
-  - [ ] `列表 `
-    - 内容建设
-- [ ] `文章`
-  - 持续内容建设
+> 更新记录--目前直接更新到GitHub，再同步到Gitee
+
+[![吖飘PLV/plv.io](https://gitee.com/plv-coding/plv.io/widgets/widget_card.svg?colors=4183c4,ffffff,ffffff,e3e9ed,666666,9b9b9b)](https://gitee.com/plv-coding/plv.io)
 
 > 已建设内容
 - [x] `主题` - light & dark
