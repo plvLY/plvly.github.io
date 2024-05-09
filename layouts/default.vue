@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import {StarportCarrier} from "vue-starport";
 </script>
 
 <template>
@@ -7,7 +6,6 @@ import {StarportCarrier} from "vue-starport";
       <Backdrop />
       <NavBar />
       <main class="px-7 py-10">
-<!--      <main class="">-->
           <slot />
       </main>
     </div>
