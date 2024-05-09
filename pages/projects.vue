@@ -1,6 +1,5 @@
 <script setup lang="ts">
-
-import type {QueryBuilderParams} from "@nuxt/content/types";
+import PIcon from '~/components/PIcon.vue'
 
 const { data } = await useAsyncData('projects', () => queryContent('/projects').findOne())
 
@@ -45,7 +44,7 @@ function slug(name: string): string {
           target="_blank"
           :title="item.name"
         >
-          <div class="text-3xl opacity-50 pt-2 pr-15 " :class="item.icon || 'i-carbon-network1'" />
+          <PIcon :name="item.icon || 'BookmarkFilled'" class-name="w-10 opacity-50 pr-1"/>
           <div class="flex-auto">
             <div class="text-normal">{{ item.name }}</div>
             <div class="desc text-sm opacity-50 font-normal" v-html="item.desc" />

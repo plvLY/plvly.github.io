@@ -29,7 +29,7 @@ const idx = 0
       >TOP</button>
     </client-only>
 
-    <div class="back fixed left-80% bottom-15 h-10" :class="$route.path !== '/' ? 'op100' : 'op0! pointer-events-none'">
+    <div class="back fixed left-80% bottom-15 h-10 z-100" :class="$route.path !== '/' ? 'op100' : 'op0! pointer-events-none'">
       <RouterLink
           :to="$route.path.split('/').slice(0, -1).join('/') || '/'"
       >
@@ -37,29 +37,6 @@ const idx = 0
       </RouterLink>
     </div>
     <nav class="nav">
-<!--      <div class="fixed ">-->
-<!--        <RouterLink-->
-<!--            :to="`/info`"-->
-<!--        >-->
-<!--          <client-only>-->
-<!--            <Starport-->
-<!--                :port="String(idx)"-->
-<!--                :class="mode ? 'aspect-1/1' : 'aspect-16/9'"-->
-<!--                transition-all duration-800-->
-<!--            >-->
-<!--              <Logo-->
-<!--                  :class="mode ? 'rounded' : ''"-->
-<!--                  :index="idx"-->
-<!--              />-->
-<!--            </Starport>-->
-<!--          </client-only>-->
-<!--        </RouterLink>-->
-<!--        <RouterLink to="/info" title="个人信息" class="flex align-center items-center">-->
-<!--          <NuxtImg src="/logo.png" alt="" class="w-10 h-10" />-->
-<!--          <span class="lt-md:hidden">{{ appConfig.title }}</span>-->
-<!--        </RouterLink>-->
-<!--      </div>-->
-
       <div class="spacer print:op0"/>
       <div class="right" >
 

@@ -6,11 +6,11 @@ projects:
       - name: plv.app
         link: 'https://github.com/plvLY/plvly.github.io'
         desc: '个人站点'
-        icon: 'i-carbon-unknown'
+        icon: 'ApplicationWeb'
       - name: 'Nuxt Playground'
         link: 'https://github.com/nuxt/learn.nuxt.com'
         desc: 'Interactive Playground for learning Nuxt'
-        icon: 'i-mdi-ab-testing'
+        icon: 'Aperture'
       - name: 'Nuxt DevTools'
         link: 'https://github.com/nuxt/devtools'
         desc: 'Unleash Nuxt Developer Experience'
@@ -18,24 +18,24 @@ projects:
       - name: plv.app
         link: 'https://plv.netlify.app/'
         desc: '个人站点'
-        icon: 'i-carbon-network1'
+        icon: 'BeeBat'
     Java:
       - name: test001后端
         link: 'https://plv.netlify.app'
         desc: '测试占位'
-        icon: 'i-mdi-focus-field '
+        icon: 'ConditionPoint'
       - name: test001后端
         link: 'https://plv.netlify.app'
         desc: '测试占位'
-        icon: 'i-mdi-focus-field '
+        icon: 'Language'
     Python:
       - name: 测试00
         link: 'https://plv.netlify.app'
         desc: '测试占位'
-        icon: 'i-mdi-focus-field '
+        icon: 'LogoPython'
       - name: 测试01
         link: 'https://plv.netlify.app'
         desc: '测试占位'
-        icon: 'i-mdi-focus-field '
+        icon: 'LogoWechat'
 
 ---
