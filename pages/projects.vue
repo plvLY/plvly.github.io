@@ -11,7 +11,7 @@ function slug(name: string): string {
 </script>
 
 <template>
-  <div class="max-w-300 mx-auto prose m-auto p-l-20 slide-enter-content">
+  <div class="max-w-300 mx-auto prose m-auto p-l-40 slide-enter-content">
     <p class="text-center mb5 op50 text-lg italic">
       {{data.title}}
     </p>
