@@ -9,10 +9,10 @@ export function formatDate(d: string | Date, onlyDate = true) {
 
 export async function getCount() {
   const ips = useState('ips', () => [])
-  const counter = useCookie('counter')
+  // const counter = useCookie('counter')
   const ipFetch = await fetch('https://api.ipify.org?format=json');
   const {ip} = await ipFetch.json();
   ips.value.push(ip)
-  counter.value = ips.value.length + ''
+  // counter.value = ips.value.length + ''
   return ips
 }

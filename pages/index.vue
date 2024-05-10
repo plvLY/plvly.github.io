@@ -28,10 +28,12 @@ if (logInfo.value){
 // console.log('1--',count?.length);
 // const num = useCookie('counter')
 // console.log('2--',num.value);
+const counter = useCookie('counter')
 const a = getCount().then(res => {
   let set = [...new Set(res.value)]
+  counter.value = set.length+''
   // set = res.value
-  console.log(set)
+  console.log(set,counter)
 })
 
 </script>
