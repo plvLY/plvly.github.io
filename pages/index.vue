@@ -3,7 +3,7 @@ import { images } from '~/composables/data'
 import {Starport} from "vue-starport";
 
 import { useStorage} from "@vueuse/core";
-
+import { getCount } from '~/composables/utils';
 // console.log(images)
 // const mode = true
 const mode = useStorage('starport-image-mode',true)
@@ -24,8 +24,16 @@ if (logInfo.value){
 // definePageMeta({
 //   middleware: ["ip-logger"]
 // })
-const count = useState('ips')?.value
-console.log(count?.length);
+// const count = useState('ips')?.value
+// console.log('1--',count?.length);
+// const num = useCookie('counter')
+// console.log('2--',num.value);
+const a = getCount().then(res => {
+  let set = [...new Set(res.value)]
+  // set = res.value
+  console.log(set)
+})
+
 </script>
 
 <template>
