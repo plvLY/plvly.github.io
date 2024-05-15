@@ -56,6 +56,10 @@ const idx = 0
           <span class="lt-md:hidden">关于</span>
           <div class="i-mdi-archive-eye md:hidden text-size-2xl"  />
         </RouterLink>
+        <RouterLink to="/message" title="留言">
+          <span class="lt-md:hidden">留言</span>
+          <div class="i-mdi-archive-eye md:hidden text-size-2xl"  />
+        </RouterLink>
         <a href="https://gitee.com/plv-coding" target="_blank" title="Gitee" class="lt-md:hidden">
           <div class="i-mdi-gitlab text-size-2xl" />
         </a>
