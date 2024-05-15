@@ -3,7 +3,7 @@ import { images } from '~/composables/data'
 import {Starport} from "vue-starport";
 
 import { useStorage} from "@vueuse/core";
-import { getCount } from '~/composables/utils';
+// import { getCount } from '~/composables/utils';
 // console.log(images)
 // const mode = true
 const mode = useStorage('starport-image-mode',true)
@@ -28,13 +28,13 @@ if (logInfo.value){
 // console.log('1--',count?.length);
 // const num = useCookie('counter')
 // console.log('2--',num.value);
-const counter = useCookie('counter')
-const a = getCount().then(res => {
-  let set = [...new Set(res.value)]
-  counter.value = set.length+''
-  // set = res.value
-  console.log(set,counter)
-})
+// const counter = useCookie('counter')
+// const a = getCount().then(res => {
+//   let set = [...new Set(res.value)]
+//   counter.value = set.length+''
+//   // set = res.value
+//   console.log(set,counter)
+// })
 
 </script>
 
