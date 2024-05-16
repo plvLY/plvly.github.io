@@ -15,7 +15,7 @@ import {JSONFilePreset} from "lowdb/node";
 export default defineEventHandler(async (event) => {
   console.log('count---')
   const defaultData: DefaultData = {count: []}
-  const db = await JSONFilePreset('public/countDB.json', defaultData);
+  const db = await JSONFilePreset('countDB.json', defaultData);
   let body = await readBody(event)
   if (body != null) {
     // 有值就push,没值就拉倒
