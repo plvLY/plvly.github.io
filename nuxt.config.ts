@@ -47,5 +47,10 @@ export default defineNuxtConfig({
         autoInstall: true
       })
     ]
+  },
+  app: {
+    head: {
+      script: ['https://hm.baidu.com/hm.js?4a47a6a60103f0fdc4fe28035cef97c0']
+    }
   }
 })
