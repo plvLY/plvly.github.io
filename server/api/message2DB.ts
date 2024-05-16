@@ -13,7 +13,7 @@ import {JSONFilePreset} from "lowdb/node";
 export default defineEventHandler(async (event) => {
   const defaultData: DefaultData = {web: []}
   const db = await JSONFilePreset('public/webMsgDB.json', defaultData);
-  let body: any = await readBody(event)
+  let body = await readBody(event)
   if (body != null) {
     // 有值就push,没值就拉倒
     db.data.web.push(body);

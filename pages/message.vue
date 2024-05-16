@@ -5,7 +5,7 @@ import PIcon from '~/components/PIcon.vue'
 let msg = ref()
 let msgList: any = ref([])
 // 获取文件数据
-const { data } = await $fetch('/api/writeMd',{method: 'POST'})
+const { data } = await $fetch('/api/message2DB',{method: 'POST'})
 msgList.value = data.web
 //获取当前IP位置相信
 const address = await $fetch('/api/ip-utils',{method: 'POST'})
@@ -18,7 +18,7 @@ const location = nation.concat('·').concat(province).concat('·').concat(city)
 // 保存文件
 async function saveMd() {
   if (!msg.value) return false
-  const { data } = await $fetch('/api/writeMd',
+  const { data } = await $fetch('/api/message2DB',
     {
       method: 'POST',
       body: {msg: msg.value,date:getCurrentDate(),addr:location,ip:ip}

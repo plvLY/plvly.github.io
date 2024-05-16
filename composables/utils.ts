@@ -18,3 +18,16 @@ export function getCurrentDate() {
   const currentDate = dayjs(new Date())
   return currentDate.format('YYYY-MM-DD HH:mm:ss')
 }
+
+/*
+* 防抖
+* */
+export function debounce(fn: Function, interval: number) {
+  let timeout: any = null
+  return function () {
+    clearTimeout(timeout)
+    timeout = window.setTimeout(() => {
+      fn.apply(window, arguments)
+    }, interval ? interval : 300)
+  }
+}

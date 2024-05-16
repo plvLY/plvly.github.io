@@ -3,12 +3,10 @@ import { images } from '~/composables/data'
 import {Starport} from "vue-starport";
 
 import { useStorage} from "@vueuse/core";
-// import { getCount } from '~/composables/utils';
-// console.log(images)
-// const mode = true
+import {getCurrentDate} from "~/composables/utils";
+
 const mode = useStorage('starport-image-mode',true)
 const logInfo = useStorage('log-info',true)
-const toggle = useToggle(mode)
 
 const enum UserInfo {
   UserName = '吖飘PLV',
@@ -20,28 +18,39 @@ if (logInfo.value){
   console.log('%c作者:%s,\n职业:%s,\n联系方式:%s->%s','color: skyblue; font-size: 30px;',UserInfo.UserName,UserInfo.Metier,UserInfo.ContactType,UserInfo.QQ)
   logInfo.value = !logInfo.value
 }
-// console.log(logInfo.value)
-// definePageMeta({
-//   middleware: ["ip-logger"]
-// })
-// const count = useState('ips')?.value
-// console.log('1--',count?.length);
-// const num = useCookie('counter')
-// console.log('2--',num.value);
-// const counter = useCookie('counter')
-// const a = getCount().then(res => {
-//   let set = [...new Set(res.value)]
-//   counter.value = set.length+''
-//   // set = res.value
-//   console.log(set,counter)
-// })
 
+// 访问情况记录
+//获取当前IP位置相信
+const address = await $fetch('/api/ip-utils',{method: 'POST'})
+const ip = address?Object.keys(address.data)[0] : undefined
+const nation = address ? Object.values(address.data)[0]?.nation : '银河'
+const province = address ? Object.values(address.data)[0]?.province : '太阳系'
+const city = address ? Object.values(address.data)[0]?.city : '地球'
+const location = nation.concat('·').concat(province).concat('·').concat(city)
+// const { data } = await $fetch('/api/count2DB',
+//   {
+//     method: 'POST',
+//     body: {date:getCurrentDate(),addr:location,ip:ip}
+//   })
+console.log('-=-=-=-=-=-=-=')
+// const { data } = await $fetch('/api/count2DB',{method: 'POST'})
+const { data } = await useAsyncData(
+    'mountains',
+    () => $fetch('/api/count2DB',{
+      method: 'POST',
+      body: {
+        date:getCurrentDate(),addr:location,ip:ip
+      }
+    }
+    )
+)
+// const { data } = await $fetch('/api/count2DB',{method: 'POST'})
+console.log(data)
 </script>
 
 <template>
   <div class="px6 py-2 items-center ">
     <div id="gallery" class="flex" >
-<!--    <div id="gallery" grid="~ cols-1 sm:cols-1 md:cols-2 lg:cols-3 xl:cols-3 px-10 justify-center" >-->
       <div class="w-20 h-20">
         <RouterLink
             v-for="img, idx of images"
