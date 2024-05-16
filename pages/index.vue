@@ -18,22 +18,16 @@ if (logInfo.value){
   console.log('%c作者:%s,\n职业:%s,\n联系方式:%s->%s','color: skyblue; font-size: 30px;',UserInfo.UserName,UserInfo.Metier,UserInfo.ContactType,UserInfo.QQ)
   logInfo.value = !logInfo.value
 }
-
+// 需要有修改文件的权限
 // 访问情况记录
 //获取当前IP位置相信
+/*
 const address = await $fetch('/api/ip-utils',{method: 'POST'})
 const ip = address?Object.keys(address.data)[0] : undefined
 const nation = address ? Object.values(address.data)[0]?.nation : '银河'
 const province = address ? Object.values(address.data)[0]?.province : '太阳系'
 const city = address ? Object.values(address.data)[0]?.city : '地球'
 const location = nation.concat('·').concat(province).concat('·').concat(city)
-// const { data } = await $fetch('/api/count2DB',
-//   {
-//     method: 'POST',
-//     body: {date:getCurrentDate(),addr:location,ip:ip}
-//   })
-console.log('-=-=-=-=-=-=-=')
-// const { data } = await $fetch('/api/count2DB',{method: 'POST'})
 const { data } = await useAsyncData(
     'mountains',
     () => $fetch('/api/count2DB',{
@@ -44,8 +38,7 @@ const { data } = await useAsyncData(
     }
     )
 )
-// const { data } = await $fetch('/api/count2DB',{method: 'POST'})
-console.log(data)
+ */
 </script>
 
 <template>

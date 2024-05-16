@@ -50,7 +50,11 @@ export default defineNuxtConfig({
   },
   app: {
     head: {
-      script: ['https://hm.baidu.com/hm.js?4a47a6a60103f0fdc4fe28035cef97c0']
+      script: [
+        {
+          src: 'https://hm.baidu.com/hm.js?4a47a6a60103f0fdc4fe28035cef97c0',
+        }
+      ]
     }
   }
 })
