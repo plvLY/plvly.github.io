@@ -1,6 +1,7 @@
 >站点链接: <a href='https://plv.netlify.app/' target="_blank">plv.app</a>
 ### 描述
 采用Nuxt3框架搭建的一套基于文件路由的内容管理系统(markdown)
+![img.png](assets/img/home.png)
 
 ### 主要技术栈
 - [x] Nuxt
