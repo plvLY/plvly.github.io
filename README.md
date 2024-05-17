@@ -1,4 +1,4 @@
-> 个人站点 [plv.app](https://plv.netlify.app/)
+> 站点链接 [plv.app](https://plv.netlify.app/)
 
 ### 描述
 采用Nuxt3框架搭建的一套基于文件路由的内容管理系统(markdown)
