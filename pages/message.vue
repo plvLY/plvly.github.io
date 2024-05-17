@@ -33,10 +33,13 @@ async function saveMd() {
     <div class="">
       <input placeholder="简简单单说句话" type="text" v-model.trim="msg"
        class="border mr h10 w100 border-rounded-3 text-center text-zinc5 text-1.1em hover:border-amber focus:outline-none
-
       "
     />
-      <button class="w-25 h-10 border-rounded-3 dark:op90 op50 hover:op100" @click="saveMd"><PIcon :name="'SendAltFilled'" class-name="w-6 align-middle color-emerald"/>说两句</button>
+<!--      <button class="w-25 h-10 border-rounded-3 dark:op90 op50 hover:op100" @click="saveMd">-->
+      <button class="w-25 h-10 border-rounded-3 dark:op90 op50 hover:op100" >
+        <PIcon :name="'SendAltFilled'" class-name="w-6 align-middle color-emerald"/>
+        说两句
+      </button>
     </div>
 <!--    <ContentDoc path="/message"/>-->
     <div class="pt-10">
