@@ -14,3 +14,9 @@ lang: Python
 
 ## Dataloader
 > 为后面的忘了提供不同的数据形式
+
+### transforms结构及用法
+
+> trnasform.py 工具箱
+
+totensor     resize

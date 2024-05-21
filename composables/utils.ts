@@ -1,4 +1,5 @@
 import dayjs from 'dayjs'
+import {$fetch} from "ofetch";
 
 /**
 * 时间格式化
@@ -30,4 +31,28 @@ export function debounce(fn: Function, interval: number) {
       fn.apply(window, arguments)
     }, interval ? interval : 300)
   }
+}
+
+/**
+ * 获取IP相关信息
+ */
+type Location = {
+  nation: string,
+  province: string,
+  city: string,
+}
+export async function getIpInfo() {
+  const {data,error} = useAsyncData('ipInfo',
+    () => $fetch(`https://webapi-pc.meitu.com/common/ip_location`, {
+      method: 'GET',
+      mode: 'no-cors',
+    }))
+  const ipInfo = data.value?.data
+  let ip: string = '',address: string = "";
+  if(ipInfo){
+    ip = Object.keys(ipInfo)[0]
+    let location: Location = Object.values(ipInfo)[0] as Location
+    address = location.nation.concat('·').concat(location.province).concat('·').concat(location.city)
+  }
+  return {ip, address}
 }

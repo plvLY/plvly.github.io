@@ -56,5 +56,16 @@ export default defineNuxtConfig({
         }
       ]
     }
+  },
+  nitro: {
+    experimental: {
+      database: true
+    },
+    database: {
+      default: {
+        connector: 'sqlite',
+        options: {name: 'db'}
+      },
+    }
   }
 })

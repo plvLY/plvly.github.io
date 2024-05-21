@@ -1,3 +1,9 @@
+/*
+* @Deprecated
+* Description：使用lowDB,把相应的数据记录到json文件
+* 对于有文件权限问题的环境不太友好
+* modify: 2024年5月21日 15点28分
+* */
 type Msg = {
   msg: string,
   ip: string,

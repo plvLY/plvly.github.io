@@ -1,4 +1,9 @@
-import {debounce} from "~/composables/utils";
+/*
+* @Deprecated
+* Description：使用lowDB,把相应的数据记录到json文件
+* 对于有文件权限问题的环境不太友好
+* modify: 2024年5月21日 15点28分
+* */
 
 type Msg = {
   num: string,
@@ -13,7 +18,6 @@ type DefaultData = {
 import {JSONFilePreset} from "lowdb/node";
 
 export default defineEventHandler(async (event) => {
-  console.log('count---')
   const defaultData: DefaultData = {count: []}
   const db = await JSONFilePreset('countDB.json', defaultData);
   let body = await readBody(event)
