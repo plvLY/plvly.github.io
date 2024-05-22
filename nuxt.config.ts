@@ -66,7 +66,7 @@ export default defineNuxtConfig({
         connector: 'sqlite',
         options: {
           name: 'db',
-          path: `${__dirname}/db/`,
+          path: `~/db/`,
         },
       },
     }
