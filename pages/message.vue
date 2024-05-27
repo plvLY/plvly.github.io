@@ -50,7 +50,7 @@ async function saveMd() {
       </button>
     </div>
 <!--    <ContentDoc path="/message"/>-->
-    <div v-if="!flag" class="pt-10 op70 color-amber">线上先关闭这个功能-netlify部署写入有点小麻烦!</div>
+    <div v-if="!flag" class="pt-10 op70 color-amber">线上先关闭这个功能-netlify部署写入有点小麻烦!!</div>
     <div v-else class="pt-10">
       <div class=" align-middle" flex="~ gap-2 wrap" v-for="item in msgList">
 
