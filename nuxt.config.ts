@@ -66,10 +66,7 @@ export default defineNuxtConfig({
         connector: 'sqlite',
         options: {
           name: 'db',
-          //b本地是 public
-          // path: `public/db/`,
-          // Netlify 是dist
-          path: `dist/db/`,
+          path: `public/db/`,
         },
       },
     }

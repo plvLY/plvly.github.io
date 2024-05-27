@@ -2,22 +2,26 @@
 import {formatDate, getCurrentDate} from "~/composables/utils";
 import PIcon from '~/components/PIcon.vue'
 
+const flag = false
+
 let msg = ref()
 let msgList: any = ref([])
 
+if(flag){
 // 获取数据
 // const { data } = await $fetch('/api/message2DB',{method: 'POST'})
-const {rows} = await $fetch('/api/db/query',{method: 'POST'})
-msgList.value = rows
+  const {rows} = await $fetch('/api/db/query',{method: 'POST'})
+  msgList.value = rows
 
 //获取当前IP位置相信
-const address = await $fetch('/api/ip-utils',{method: 'POST'})
-const ip = address?Object.keys(address.data)[0] : undefined
-const nation = address ? Object.values(address.data)[0]?.nation : '银河'
-const province = address ? Object.values(address.data)[0]?.province : '太阳系'
-const city = address ? Object.values(address.data)[0]?.city : '地球'
-const location = nation.concat('·').concat(province).concat('·').concat(city)
+  const address = await $fetch('/api/ip-utils',{method: 'POST'})
+  const ip = address?Object.keys(address.data)[0] : undefined
+  const nation = address ? Object.values(address.data)[0]?.nation : '银河'
+  const province = address ? Object.values(address.data)[0]?.province : '太阳系'
+  const city = address ? Object.values(address.data)[0]?.city : '地球'
+  const location = nation.concat('·').concat(province).concat('·').concat(city)
 // console.log(address.data,Object.keys(address.data),Object.values(address.data))
+}
 
 // 保存文件
 async function saveMd() {
@@ -39,14 +43,15 @@ async function saveMd() {
        class="border mr h10 w100 border-rounded-3 text-center text-zinc5 text-1.1em hover:border-amber focus:outline-none
       "
     />
-      <button class="w-25 h-10 border-rounded-3 dark:op90 op50 hover:op100" @click="saveMd">
-<!--      <button class="w-25 h-10 border-rounded-3 dark:op90 op50 hover:op100" >-->
+<!--      <button class="w-25 h-10 border-rounded-3 dark:op90 op50 hover:op100" @click="saveMd">-->
+      <button class="w-25 h-10 border-rounded-3 dark:op90 op50 hover:op100" >
         <PIcon :name="'SendAltFilled'" class-name="w-6 align-middle color-emerald"/>
         说两句
       </button>
     </div>
 <!--    <ContentDoc path="/message"/>-->
-    <div class="pt-10">
+    <div v-if="!flag" class="pt-10 op70 color-amber">线上先关闭这个功能-netlify部署写入有点小麻烦</div>
+    <div v-else class="pt-10">
       <div class=" align-middle" flex="~ gap-2 wrap" v-for="item in msgList">
 
         <span class="op70">{{item.msg}}</span>
