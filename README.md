@@ -26,4 +26,4 @@
 6. Netlify 会自动检测到你的项目并且可能会提供一些部署配置选项。
 7. 点击 “Deploy site” 按钮开始部署
 8. 部署完成后，你将会在 Netlify 的用户界面上看到你的站点 URL。
-9. ![img.png](assets/img/img.png)
+9. ![img.png](/img/img.png)
