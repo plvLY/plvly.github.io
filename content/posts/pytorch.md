@@ -1,11 +1,18 @@
 ---
-title: PyTorch
+title: PyTorch构建神经网络
 description: PyTorch笔记
 date: 2024-04-16
 duration: 30min
 lang: Python
 ---
-## 描述
+## 0、前言
+> 神经网络
+
+> PyTorch
+
+​		PyTorch是一个开源的深度学习框架，由Facebook AI Research开发。
+
+## 1、环境搭建
 
 ## Dataset
 > 提供一种方式去获取数据及其label
