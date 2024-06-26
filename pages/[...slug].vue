@@ -7,6 +7,7 @@ const pRoute = route.path.split('/').slice(0, -1).join('')
 const { data } = await useAsyncData('', () => queryContent(pRoute).where({ _path: route.path }).findOne())
 /*获取toc信息*/
 const toc = data.value?.body?.toc
+console.log(toc)
 // const { data: navigation } = await useAsyncData('navigation', () => fetchContentNavigation())
 /*获取相邻文章地址*/
 const [prev, next] = await queryContent()
@@ -22,10 +23,15 @@ const [prev, next] = await queryContent()
     <div class="prose m-auto slide-enter-content no-preference">
       <div class="table-of-contents">
         <ul v-if="toc && toc.links">
-          <li v-for="link in toc.links" :key="link.text">
+          <li v-for="link in toc.links" :key="link.text" hover:bg-green>
             <a :href="`#${link.id}`">
               {{ link.text }}
             </a>
+						<div v-for="child in link?.children" :key="link.id" hover:bg-red hover:color-white>
+							<a :href="`#${child.id}`" ml-5 text-sm op70 hover:color-white>
+								{{ child.text }}
+							</a>
+						</div>
           </li>
         </ul>
       </div>
@@ -49,19 +55,19 @@ const [prev, next] = await queryContent()
 <!--          </template>-->
         </ContentDoc>
       </div>
-      <div class="header back fixed left-80% bottom-7 h-10 op50!">
+      <div class="header back fixed left-75% bottom-7 h-10 op50!">
         <div>
           <RouterLink
               :to="prev?._path || ''"
           >
-            <span class="font-mono">> prev:{{prev?prev.title:'没了，别点！'}}</span>
+            <span class="font-mono" hover:bg-green>> next:{{prev?prev.title:'没了，别点！'}}</span>
           </RouterLink>
         </div>
         <div>
           <RouterLink
               :to="next?._path || ''"
           >
-            <span class="font-mono" >> next:{{next?next.title:'没了，别点！'}}</span>
+            <span class="font-mono" hover:bg-green>> prev:{{next?next.title:'没了，别点！'}}</span>
           </RouterLink>
         </div>
       </div>

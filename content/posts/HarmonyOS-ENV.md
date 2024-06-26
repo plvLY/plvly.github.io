@@ -1,5 +1,5 @@
 ---
-title: HarmonyOS应用开发 - 环境搭建
+title: HarmonyOS应用开发00 - 环境搭建
 description: HarmonyOS应用开发
 date: 2024-06-22
 duration: 20min
@@ -38,19 +38,24 @@ lang: 鸿蒙
 ::
 
 > 打开设备管理工具：Tools --> Device Manager
+
 ![device.png](/img/HMOS/device.png)
 
 > 在**Local Emulator**页签中，单击右下角的**New Emulator**按钮，创建一个本地模拟器
+
 ![selectDevice.png](/img/HMOS/selectDevice.png)
 
 > 在管理页面点击绿色小三角即可运行模拟器
+
 ![vm.png](/img/HMOS/vm.png)
 
 ## 验证 - Hello World
 > 打开IDE -- 点击Create Project，创建新工程
+
 ![img.png](/img/HMOS/createHW.png)
 
 > 填写相关信息，SDK选择API9(对应鸿蒙4.0)，Model选择Stage(对应鸿蒙4.0，FA为旧版本SDK)
+
 ![editInfo.png](/img/HMOS/editInfo.png)
 
 > 右上角点击运行，DevEco Studio会启动应用/服务的编译构建，完成后应用/服务即可运行在模拟器上

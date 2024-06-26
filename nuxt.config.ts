@@ -30,7 +30,7 @@ export default defineNuxtConfig({
     markdown: {
       toc: {
         depth: 3,
-        searchDepth: 3
+        searchDepth: 4
       }
     },
     components: [

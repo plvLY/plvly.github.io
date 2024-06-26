@@ -22,14 +22,14 @@ const idx = 0
     <client-only>
       <button
           title="Scroll to top"
-          class="fixed left-80% bottom-25 w-10 h-10 hover:op50
-      hover-bg-hex-8883 transition duration-300 z-100 print:hidden border-rd-full border-0"
-          :class="scroll > 300 ? 'op50' : 'op0! pointer-events-none'"
+          class="fixed left-75% bottom-25 w-10 h-10 hover:bg-green 
+      hover-color-white transition duration-300 z-100 print:hidden border-rd-full border-0"
+          :class="scroll > 300 ? 'op70' : 'op0! pointer-events-none'"
           @click="toTop()"
       >TOP</button>
     </client-only>
 
-    <div class="back fixed left-80% bottom-15 h-10 z-100" :class="$route.path !== '/' ? 'op100' : 'op0! pointer-events-none'">
+    <div class="back fixed left-75% bottom-15 h-10 z-100" :class="$route.path !== '/' ? 'op100' : 'op0! pointer-events-none'">
       <RouterLink
           :to="$route.path.split('/').slice(0, -1).join('/') || '/'"
       >
