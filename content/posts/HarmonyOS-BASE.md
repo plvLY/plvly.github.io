@@ -1,5 +1,5 @@
 ---
-title: HarmonyOS应用开发02 - 基础开发
+title: HarmonyOS应用开发02 - UI开发
 description: HarmonyOS应用开发
 date: 2024-06-22
 duration: 30min
@@ -377,3 +377,144 @@ let params = router.getParams()
 - onPageShow():页面每次显示时都会被调用一次，包括路由、应用从后台进入前台等场景
 - onPagehide():页面每次隐藏时都会被调用一次，包括路由、应用从前台进入后台等场景
 - onBackPress():当用户点击返回按钮时会被调用
+
+### 11、网络请求
+
+> 官网：**http**模块     社区：**axios**
+
+> 默认情况下只能访问有限的系统资源，若应用需要访问一些受保护的数据(照片、通讯录、位置等)或者功能(打电话、发短信、联网等)需要先申请相应的权限
+>
+> [申请权限地址](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides-V5/4_2_u7533_u8bf7_u5e94_u7528_u6743_u9650-V5)
+
+#### 声明所需权限
+
+- 在`entry/src/main/module.json5`文件中声明所需权限
+
+  ```json
+  {
+    "module": {
+        ...
+        "requestPermissions": [
+        {
+        "name":"ohos.permission.***"
+        }
+      ]
+    }
+  }
+  ```
+
+- 申请权限
+
+  - 如果目标权限的授权方式为`system_grant`,系统会在安装应用时自动为其进行授权
+  - 如果目标权限的授权方式为`user_grant`,需要在应用运行时弹窗前求用户授权
+
+
+​			官方文档：[权限列表](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides-V5/4_3_u5e94_u7528_u6743_u9650_u5217_u8868-V5)
+
+- 依赖包- axios
+
+  - OpenHarmony三方库中心仓：[ **中心仓** ](https://ohpm.openharmony.cn/#/cn/home)
+
+  - `ohpm i @ohos/axios`
+
+### 12、应用级状态管理
+
+#### LocalStotage
+
+> 用于存储页面级别的状态数据
+
+- 创建实例
+
+  ```typescript
+  let storage = new LocalStorage({count:0})
+  ```
+
+- 将实例绑定到入口文件
+
+  ```typescript
+  @Entry(storage)
+  @Component
+  struct Hello{
+      build(){
+          ...
+      }
+  }
+  ```
+
+- 页面内组件访问
+
+  - `@LocalStorageProp()`和`@LocalStorageLink()`,前者单向，后者双向
+
+  ```typescript
+  let storage = new LocalStorage({count:0})
+  //父组件
+  @Entry(storage)
+  @Component
+  struct Parent{
+      //双向
+      @LocalStorageLink('count') count: number = 1;
+      build(){
+          Column(){
+              Child()
+          }
+      }
+  }
+  ```
+
+  ```typescript
+  //子组件
+  @Component
+  export struct Child{
+      //单向
+     @LocalStorageProp('count') count: number = 1;
+      build(){
+          Text(this.count.toString())
+      }
+  }
+  ```
+
+  
+
+#### AppStotage
+
+> 整个应用的所有组件共享
+
+- 初始化
+
+  ```typescript
+  AppStorage.SetOrCreate('count',0)
+  ```
+
+- 整个应用的组件中访问
+
+  - `@StorageProp()`和`@StorageLink()`,前者单向，后者双向
+
+#### PersistentStotage
+
+> LocalStotage和AppStotage都是将状态数据保存到内存中，应用退出后，数据就会被清掉。如果需要对数据进行持久化，就需要用到PersistentStotage
+
+- **PersistentStorage**可以将指定的**AppStorage**中的属性保存到磁盘中，并且**PersistentStorage**和**AppStorage**的该属性会自动建立双向同步，开发者不能直接访问**PersistentStorage**中的属性，而只能通过**AppStorage**进行访问
+
+  ```typescript
+  PersistentStorage.PersistProp('count', 0);
+  
+  @Entry
+  @Component
+  struct Index {
+    @StorageLink('count') count: number = 0
+  
+    build() {
+      Row() {
+        Column() {
+          // 应用退出时会保存当前结果。重新启动后，会显示上一次的保存结果
+          Text(`${this.count}`)
+            .onClick(() => {
+              this.count += 1;
+            })
+        }
+      }
+    }
+  }
+  ```
+
+  
