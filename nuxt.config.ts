@@ -48,15 +48,15 @@ export default defineNuxtConfig({
       })
     ]
   },
-  app: {
-    head: {
-      script: [
-        {
-          src: 'https://hm.baidu.com/hm.js?4a47a6a60103f0fdc4fe28035cef97c0',
-        }
-      ]
-    }
-  },
+  // app: {
+  //   head: {
+  //     script: [
+  //       {
+  //         src: 'https://hm.baidu.com/hm.js?4a47a6a60103f0fdc4fe28035cef97c0',
+  //       }
+  //     ]
+  //   }
+  // },
   nitro: {
     experimental: {
       database: true
