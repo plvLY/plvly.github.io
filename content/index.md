@@ -1,4 +1,9 @@
 # PLV
+
+::alert{type="notice"}
+吖飘博客V-2.0 版本已发布 >>[吖飘PLV](http://139.9.180.11/){:target="_blank"}<<(点击跳转)。
+::
+---
 ::alert{type="warning"}
 站点基于 [antfu.me](https://antfu.me/){:target="_blank"}(作者：Anthony Fu)改造而成。
 ::
