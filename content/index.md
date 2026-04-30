@@ -1,7 +1,7 @@
 # PLV
 
 ::alert{type="notice"}
-吖飘博客V-2.0 版本已发布 >>[吖飘PLV](http://139.9.180.11/){:target="_blank"}<<(点击跳转)。
+~~吖飘博客V-2.0 版本已发布 >>[吖飘PLV]<<(点击跳转)。~~  -----> **已下线**
 ::
 
 ![plvapp.png](/img/plvapp.png)
