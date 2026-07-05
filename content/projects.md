@@ -3,9 +3,9 @@ title: Demo Link
 description: Demo列表
 projects: 
     Current Focus:
-      - name: plv.app
-        link: 'https://github.com/plvLY/plvly.github.io'
-        desc: '使用nuxt搭建的一个简约博客站点'
+      - name: Agentic Dashboard
+        link: 'https://gitee.com/plv-coding/agentic-dashboard'
+        desc: 'Agentic Dashboard — 智能政务驾驶舱：BI + Agent 双引擎驱动的领导决策支持系统，让驾驶舱从"被动看数"进化为"主动问数、智能归因"'
         icon: 'Blog'
       - name: 可视化
         link: 'https://gitee.com/plv-coding/python-demo'
