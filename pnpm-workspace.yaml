@@ -1,0 +1,3 @@
+patchedDependencies:
+  mlly@1.6.1: patches/mlly@1.6.1.patch
+  nuxi@3.11.1: patches/nuxi@3.11.1.patch
