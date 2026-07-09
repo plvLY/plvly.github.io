@@ -65,7 +65,7 @@ async function saveMd() {
         :disabled="loading || !msg"
         @click="saveMd"
       >
-        <PIcon :name="'SendAltFilled'" class-name="w-6 align-middle color-emerald" />
+        <PIcon name="SendAltFilled" class-name="w-6 align-middle color-emerald" />
         说两句
       </button>
     </div>
@@ -78,7 +78,7 @@ async function saveMd() {
           v-if="item.addr"
           class="flex-none text-xs rounded px-1 py-0.5 hidden md:block"
         >
-          <PIcon :name="'LocationFilled'" class-name="w-4 align-middle color-green" />
+          <PIcon name="LocationFilled" class-name="w-4 align-middle color-green" />
           {{ item.addr }}
         </span>
       </div>

@@ -1,7 +1,4 @@
 <script setup lang="ts">
-import {Starport} from "vue-starport";
-import {useStorage} from "@vueuse/core";
-
 const appConfig = useAppConfig()
 
 function toTop(){
@@ -12,9 +9,6 @@ function toTop(){
 }
 
 const { y: scroll } = useWindowScroll()
-
-const mode = useStorage('starport-image-mode',true)
-const idx = 0
 </script>
 
 <template>
@@ -42,11 +36,11 @@ const idx = 0
 
         <RouterLink to="/" title="首页">
           <span class="lt-md:hidden">首页</span>
-          <div class="i-mdi-archive-eye md:hidden text-size-2xl"  />
+          <div class="i-mdi-home md:hidden text-size-2xl"  />
         </RouterLink>
         <RouterLink to="/posts" title="文章">
           <span class="lt-md:hidden">文章</span>
-          <div class="i-mdi-archive-eye md:hidden text-size-2xl"  />
+          <div class="i-mdi-file-document md:hidden text-size-2xl"  />
         </RouterLink>
         <RouterLink to="/projects" title="项目">
           <span class="lt-md:hidden">Demo</span>
@@ -54,11 +48,11 @@ const idx = 0
         </RouterLink>
         <RouterLink to="/info" title="关于">
           <span class="lt-md:hidden">关于</span>
-          <div class="i-mdi-archive-eye md:hidden text-size-2xl"  />
+          <div class="i-mdi-information md:hidden text-size-2xl"  />
         </RouterLink>
         <RouterLink to="/message" title="留言">
           <span class="lt-md:hidden">留言</span>
-          <div class="i-mdi-archive-eye md:hidden text-size-2xl"  />
+          <div class="i-mdi-message-text md:hidden text-size-2xl"  />
         </RouterLink>
         <a href="https://gitee.com/plv-coding" target="_blank" title="Gitee" class="lt-md:hidden">
           <div class="i-mdi-gitlab text-size-2xl" />

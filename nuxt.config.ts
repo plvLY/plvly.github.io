@@ -1,6 +1,6 @@
 import Icons from 'unplugin-icons/vite'
 export default defineNuxtConfig({
-  devtools: { enabled: true },
+  devtools: { enabled: true, componentInspector: false },
   modules: [
     '@unocss/nuxt',
     "@nuxt/image",
@@ -8,15 +8,14 @@ export default defineNuxtConfig({
     "@nuxt/content",
     '@nuxtjs/mdc',
   ],
+
   css: [
     '~/assets/css/main.css',
     '~/assets/css/prose.css',
     '~/assets/css/markdown.css',
   ],
+
   content: {
-    // documentDriven: {
-    //   layoutFallbacks: ['posts'],
-    // },
     highlight: {
       theme: {
         // Default theme (same as single string)
@@ -40,6 +39,7 @@ export default defineNuxtConfig({
       },
     ],
   },
+
   vite: {
     plugins: [
       Icons({
@@ -48,16 +48,10 @@ export default defineNuxtConfig({
       })
     ]
   },
-  // app: {
-  //   head: {
-  //     script: [
-  //       {
-  //         src: 'https://hm.baidu.com/hm.js?4a47a6a60103f0fdc4fe28035cef97c0',
-  //       }
-  //     ]
-  //   }
-  // },
+
   nitro: {
     node: true,
-  }
+  },
+
+  compatibilityDate: '2026-07-10'
 })

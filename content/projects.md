@@ -5,14 +5,19 @@ projects:
     Current Focus:
       - name: Agentic Dashboard
         link: 'https://gitee.com/plv-coding/agentic-dashboard'
-        desc: 'Agentic Dashboard — 智能政务驾驶舱：BI + Agent 双引擎驱动的领导决策支持系统，让驾驶舱从"被动看数"进化为"主动问数、智能归因"'
+        desc: '智能政务驾驶舱：BI + Agent 双引擎驱动的领导决策支持系统'
         icon: 'Blog'
-      - name: 可视化
-        link: 'https://gitee.com/plv-coding/python-demo'
-        desc: '①冒泡排序可视化'
-        icon: 'LogoPython'
+    AI:
+      - name: Agentic Dashboard
+        link: 'https://gitee.com/plv-coding/agentic-dashboard'
+        desc: '智能政务驾驶舱：BI + Agent 双引擎驱动的领导决策支持系统'
+        icon: 'Blog'
     前端:
       - name: plv.app
+        link: 'https://gitee.com/plv-coding/plv.app'
+        desc: '使用Nuxt3、vue3创建的个人站点2.0'
+        icon: 'Blog'
+      - name: plv.io
         link: 'https://github.com/plvLY/plvly.github.io'
         desc: '使用nuxt搭建的一个简约博客站点'
         icon: 'Blog'

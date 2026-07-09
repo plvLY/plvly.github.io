@@ -13,7 +13,7 @@ function slug(name: string): string {
 <template>
   <div class="max-w-300 mx-auto prose m-auto p-l-40 slide-enter-content">
     <p class="text-center mb5 op50 text-lg italic">
-      {{data.title}}
+      {{data?.title}}
     </p>
     <div v-for="(key, cidx) in Object.keys(projects)" :key="cidx"
      :style="{ '--enter-stage': cidx + 1 }"
@@ -44,10 +44,10 @@ function slug(name: string): string {
           target="_blank"
           :title="item.name"
         >
-          <PIcon :name="item.icon || 'BookmarkFilled'" class-name="w-10 opacity-50 pr-1"/>
+          <PIcon :name="item.icon || 'BookmarkFilled'" class-name="w-10 opacity-50 pr-1" />
           <div class="flex-auto">
             <div class="text-normal">{{ item.name }}</div>
-            <div class="desc text-sm opacity-50 font-normal" v-html="item.desc" />
+            <div class="desc text-sm opacity-50 font-normal">{{ item.desc }}</div>
           </div>
         </a>
       </div>

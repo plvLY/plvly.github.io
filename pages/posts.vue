@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import {formatDate} from "~/composables/utils";
-import type {ParsedContent} from "@nuxt/content/types";
-import type { QueryBuilderParams } from '@nuxt/content/dist/runtime/types'
+import type {ParsedContent} from "@nuxt/content";
 
 useHead({
   title: '文章',
@@ -23,8 +22,7 @@ function getGroupName(p: ParsedContent) {
   return getYear(p.date)
 }
 
-/* 排序-按时间倒序*/
-const query: QueryBuilderParams = { path: '/posts', sort: [{ date: -1 }] }
+const query = { path: '/posts', sort: [{ date: -1 } as const] }
 
 </script>
 

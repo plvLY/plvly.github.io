@@ -1,15 +1,11 @@
 <script setup lang="ts">
-import { useStorage} from "@vueuse/core";
 import {Starport} from "vue-starport";
 
-const props = {
-  no: 0
-}
+const props = defineProps({
+  no: { type: Number, default: 0 }
+})
 
-
-const index = computed(() => +props.no)
-
-let size = useStorage('size', 200)
+const size = 200
 </script>
 
 <template>
@@ -20,13 +16,12 @@ let size = useStorage('size', 200)
     >
       <client-only>
         <Starport
-            :port="String(index)"
-            :style="{ width: `${size}px`, height: `${size}px` }"
-            class="transition-all duration-800"
+            :port="String(props.no)"
+            class="w-50 h-50 transition-all duration-800"
         >
           <Logo
               class="rounded-1/2 shadow-xl"
-              :index="index"
+              :index="props.no"
           />
         </Starport>
       </client-only>

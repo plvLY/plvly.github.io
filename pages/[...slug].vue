@@ -1,21 +1,17 @@
 <script setup lang="ts">
+import { formatDate } from '~/composables/utils'
 
 const route = useRoute()
-/*获取文件夹路由*/
-const pRoute = route.path.split('/').slice(0, -1).join('')
-/*查询当前路由下文章信息的文章*/
-const { data } = await useAsyncData('', () => queryContent(pRoute).where({ _path: route.path }).findOne())
-/*获取toc信息*/
+const dir = route.path.split('/').slice(0, -1).join('')
+const { data } = await useAsyncData(`content-${route.path}`,
+  () => queryContent(dir).where({ _path: route.path }).findOne())
 const toc = data.value?.body?.toc
-console.log(toc)
-// const { data: navigation } = await useAsyncData('navigation', () => fetchContentNavigation())
-/*获取相邻文章地址*/
+
 const [prev, next] = await queryContent()
     .only(['_path', 'title'])
     .where({_dir:"posts"})
     .sort({ date: -1})
     .findSurround(route.path)
-// console.log(queryContent().where({_dir:"posts"}).findSurround(route.path))
 </script>
 <template>
   <article class="no-preference">
@@ -56,18 +52,14 @@ const [prev, next] = await queryContent()
         </ContentDoc>
       </div>
       <div class="header back fixed left-75% bottom-7 h-10 op50!">
-        <div>
-          <RouterLink
-              :to="prev?._path || ''"
-          >
-            <span class="font-mono" hover:bg-green>> next:{{prev?prev.title:'没了，别点！'}}</span>
+        <div v-if="prev">
+          <RouterLink :to="prev._path">
+            <span class="font-mono" hover:bg-green>> next:{{ prev.title }}</span>
           </RouterLink>
         </div>
-        <div>
-          <RouterLink
-              :to="next?._path || ''"
-          >
-            <span class="font-mono" hover:bg-green>> prev:{{next?next.title:'没了，别点！'}}</span>
+        <div v-if="next">
+          <RouterLink :to="next._path">
+            <span class="font-mono" hover:bg-green>> prev:{{ next.title }}</span>
           </RouterLink>
         </div>
       </div>

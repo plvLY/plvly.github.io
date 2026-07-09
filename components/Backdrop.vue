@@ -16,6 +16,8 @@ const MIN_BRANCH = 30
 const len = ref(6)
 const stopped = ref(false)
 
+let controls: ReturnType<typeof useRafFn>
+
 function initCanvas(canvas: HTMLCanvasElement, width = 400, height = 400, _dpi?: number) {
   const ctx = canvas.getContext('2d')!
 
@@ -39,8 +41,7 @@ function polar2cart(x = 0, y = 0, r = 0, theta = 0) {
   return [x + dx, y + dy]
 }
 
-onMounted(async () => {
-  const canvas = el.value!
+function boot(canvas: HTMLCanvasElement) {
   const { ctx } = initCanvas(canvas, size.width, size.height)
   const { width, height } = canvas
 
@@ -61,31 +62,23 @@ onMounted(async () => {
     const rad1 = rad + random() * r15
     const rad2 = rad - random() * r15
 
-    // out of bounds
     if (nx < -100 || nx > size.width + 100 || ny < -100 || ny > size.height + 100)
       return
 
-    const rate = counter.value <= MIN_BRANCH
-        ? 0.8
-        : 0.5
+    const rate = counter.value <= MIN_BRANCH ? 0.8 : 0.5
 
-    // left branch
     if (random() < rate)
       steps.push(() => step(nx, ny, rad1, counter))
 
-    // right branch
     if (random() < rate)
       steps.push(() => step(nx, ny, rad2, counter))
   }
 
   let lastTime = performance.now()
-  const interval = 1000 / 40 // 50fps
-
-  let controls: ReturnType<typeof useRafFn>
+  const interval = 1000 / 40
 
   const frame = () => {
-    if (performance.now() - lastTime < interval)
-      return
+    if (performance.now() - lastTime < interval) return
 
     prevSteps = steps
     steps = []
@@ -96,21 +89,14 @@ onMounted(async () => {
       stopped.value = true
     }
 
-    // Execute all the steps from the previous frame
     prevSteps.forEach((i) => {
-      // 50% chance to keep the step for the next frame, to create a more organic look
-      if (random() < 0.5)
-        steps.push(i)
-      else
-        i()
+      if (random() < 0.5) steps.push(i)
+      else i()
     })
   }
 
   controls = useRafFn(frame, { immediate: false })
 
-  /**
-   * 0.2 - 0.8
-   */
   const randomMiddle = () => random() * 0.6 + 0.2
 
   start.value = () => {
@@ -125,13 +111,35 @@ onMounted(async () => {
       () => step(-5, randomMiddle() * size.height, 0),
       () => step(size.width + 5, randomMiddle() * size.height, r180),
     ]
-    if (size.width < 500)
-      steps = steps.slice(0, 2)
+    if (size.width < 500) steps = steps.slice(0, 2)
     controls.resume()
     stopped.value = false
   }
 
   start.value()
+}
+
+onMounted(() => {
+  const canvas = el.value!
+  const isMobile = window.innerWidth < 768
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+  if (isMobile || prefersReduced) return
+
+  if ('requestIdleCallback' in window) {
+    requestIdleCallback(() => boot(canvas), { timeout: 2000 })
+  } else {
+    setTimeout(() => boot(canvas), 2000)
+  }
+})
+
+useEventListener('visibilitychange', () => {
+  if (!controls) return
+  if (document.hidden) {
+    controls.pause()
+  } else if (!stopped.value) {
+    controls.resume()
+  }
 })
 
 const mask = computed(() => 'radial-gradient(circle, transparent, black)')

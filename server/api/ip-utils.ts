@@ -1,11 +1,23 @@
-import {$fetch} from "ofetch";
+import { $fetch } from "ofetch";
 
-export default defineEventHandler(async (event) => {
+let cached: unknown = null
+let cacheTime = 0
+const CACHE_TTL = 60_000
 
-  // const getIp = await $fetch('https://api.ipify.org/?format=json')
-  // const address = await $fetch(`http://ip-api.com/json?lang=zh-CN`)
-  // const address = await $fetch(`http://pv.sohu.com/`)
-  const address = await $fetch(`https://webapi-pc.meitu.com/common/ip_location`)
+export default defineEventHandler(async () => {
+  if (cached && Date.now() - cacheTime < CACHE_TTL) {
+    return cached
+  }
 
-  return address? address : undefined
+  try {
+    const address = await $fetch('https://webapi-pc.meitu.com/common/ip_location', {
+      retry: 1,
+      retryDelay: 500,
+    })
+    cached = address
+    cacheTime = Date.now()
+    return address
+  } catch {
+    return null
+  }
 })

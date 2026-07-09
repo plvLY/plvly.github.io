@@ -1,5 +1,5 @@
 ---
-title: LightweightEmbeddings
+title: 使用Docker部署Embedding模型
 description: 使用Docker部署Embedding模型,提供langchain4j调用
 date: 2026-07-09
 duration: 5min

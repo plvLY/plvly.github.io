@@ -2,23 +2,22 @@
   <div class="font-sans text-gray-700 dark:text-gray-200 relative">
     <NuxtLayout >
       <NuxtLoadingIndicator />
-      <StarportCarrier>
-        <NuxtPage />
-      </StarportCarrier>
+      <div>
+        <StarportCarrier>
+          <NuxtPage />
+        </StarportCarrier>
+      </div>
     </NuxtLayout>
   </div>
 </template>
 <script setup lang="ts">
 import {StarportCarrier} from "vue-starport";
 
-useHead({
-  meta: [
-    { name: "description", content: "这是PLV的博客站点" },
-  ]
-})
+const appConfig = useAppConfig()
+
 useSeoMeta({
-  title: 'PLV-简约博客',
-  ogTitle: 'PLV-简约博客',
-  description: '这是PLV的博客站点',
+  title: () => `${appConfig.title} - 简约博客`,
+  ogTitle: () => `${appConfig.title} - 简约博客`,
+  description: 'PLV 的个人博客站点',
 })
 </script>
