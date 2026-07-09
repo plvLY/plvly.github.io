@@ -15,7 +15,7 @@ export default defineEventHandler(async (event) => {
       msg: body.msg.trim(),
       ip: body.ip ?? '',
       date: body.date ?? '',
-      addr: body.addr ?? '',
+      addr: body.city ?? '',
     })
     await store.setJSON('messages', messages)
     return { rows: messages }

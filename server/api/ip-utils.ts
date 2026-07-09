@@ -9,8 +9,10 @@ export default defineEventHandler(async () => {
     return cached
   }
 
+  //https://webapi-pc.meitu.com/common/ip_location
+  const ipURL = 'http://ip-api.com/json/?lang=zh-CN'
   try {
-    const address = await $fetch('https://webapi-pc.meitu.com/common/ip_location', {
+    const address = await $fetch(ipURL, {
       retry: 1,
       retryDelay: 500,
     })
