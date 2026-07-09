@@ -11,17 +11,22 @@ import {
 export default defineConfig({
     shortcuts: [
         {
-            'bg-base': 'bg-white dark:bg-black',
-            'border-base': 'border-[#8884]',
+            'bg-base': 'bg-[var(--c-bg)]',
+            'bg-surface': 'bg-[var(--c-surface)]',
+            'border-base': 'border-[var(--c-border)]',
         },
         [/^btn-(\w+)$/, ([_, color]) => `op50 px2.5 py1 transition-all duration-200 ease-out no-underline! hover:(op100 text-${color} bg-${color}/10) border border-base! rounded`],
     ],
     theme: {
-        // ...
         colors: {
-            'veryCool': '#0000ff', // class="text-very-cool"
             'brand': {
-                'primary': 'hsl(var(--hue, 217) 78% 51%)', //class="bg-brand-primary"
+                'primary': 'hsl(217, 65%, 55%)',
+                'subtle': 'hsl(217, 65%, 55% / 0.08)',
+            },
+            'surface': {
+                DEFAULT: 'var(--c-surface)',
+                hover: 'var(--c-surface-hover)',
+                elevated: 'var(--c-surface-elevated)',
             },
         },
     },

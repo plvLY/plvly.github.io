@@ -15,6 +15,12 @@ export default defineNuxtConfig({
     '~/assets/css/markdown.css',
   ],
 
+  mdc: {
+    highlight: {
+      langs: ['dockerfile', 'java'],
+    },
+  },
+
   content: {
     highlight: {
       theme: {

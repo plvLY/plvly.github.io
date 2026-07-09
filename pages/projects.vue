@@ -6,67 +6,59 @@ const { data } = await useAsyncData('projects', () => queryContent('/projects').
 const projects = data?.value?.projects
 
 function slug(name: string): string {
-  return name.toLowerCase().replace(/[\s\\\/]+/g, '-');
+  return name.toLowerCase().replace(/[\s\\\/]+/g, '-')
 }
 </script>
 
 <template>
-  <div class="max-w-300 mx-auto prose m-auto p-l-40 slide-enter-content">
-    <p class="text-center mb5 op50 text-lg italic">
-      {{data?.title}}
+  <div class="max-w-260 mx-auto px-6 md:px-10 py-6 slide-enter-content">
+    <p class="text-center mb-8 text-[var(--c-text-tertiary)] text-base italic">
+      {{ data?.title }}
     </p>
-    <div v-for="(key, cidx) in Object.keys(projects)" :key="cidx"
-     :style="{ '--enter-stage': cidx + 1 }"
-     slide-enter
-     class="pb-10"
-    >
+
+    <div class="sticky top-0 z-10 bg-[var(--c-bg)] pb-3 mb-6 border-b border-[var(--c-border)]">
+      <div class="flex flex-wrap gap-2 justify-center">
+        <a
+          v-for="key in Object.keys(projects || {})"
+          :key="key"
+          :href="`#${slug(key)}`"
+          class="px-2.5 py-1 text-xs rounded border border-[var(--c-border)] transition-all duration-200 no-underline text-inherit opacity-50 hover:opacity-100"
+        >
+          {{ key }}
+        </a>
+      </div>
+    </div>
+
+    <div v-for="(key, cidx) in Object.keys(projects || {})" :key="cidx" class="mb-12">
       <div
         :id="slug(key)"
-        class="select-none relative h20 pointer-events-none slide-enter"
-        :style="{
-          '--enter-stage': cidx - 2,
-          '--enter-step': '60ms',
-        }"
+        class="mb-4"
       >
-        <span class="text-5em color-transparent absolute left--1rem top-0rem font-bold leading-1em text-stroke-1.5 text-stroke-hex-aaa op35 dark:op20" >
-          {{ key }}
-        </span>
+        <h2 class="text-base font-semibold m-0">{{ key }}</h2>
       </div>
+
       <div
-        class="project-grid py-2 max-w-500 mx-auto"
-        grid="~ cols-1 md:cols-2 gap-4 lg:cols-3"
+        class="grid gap-4"
+        :class="projects && projects[key].length > 2 ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1 sm:grid-cols-2'"
       >
         <a
-          v-for="(item, idx) in projects[key]"
+          v-for="(item, idx) in (projects ? projects[key] : [])"
           :key="idx"
-          class="item relative flex items-center"
+          class="flex items-start gap-4 p-4 rounded-lg border border-[var(--c-border)] transition-all duration-200 no-underline text-inherit hover:bg-[var(--c-surface-hover)] group"
           :href="item.link"
           target="_blank"
           :title="item.name"
         >
-          <PIcon :name="item.icon || 'BookmarkFilled'" class-name="w-10 opacity-50 pr-1" />
-          <div class="flex-auto">
-            <div class="text-normal">{{ item.name }}</div>
-            <div class="desc text-sm opacity-50 font-normal">{{ item.desc }}</div>
+          <div class="flex-none">
+            <PIcon :name="item.icon || 'BookmarkFilled'" class-name="w-8 p-1.5 rounded-lg bg-[var(--c-border)] text-[var(--c-text-tertiary)] transition-colors" />
+          </div>
+          <div class="flex-auto min-w-0">
+            <div class="text-sm font-medium truncate transition-colors">{{ item.name }}</div>
+            <div class="text-xs text-[var(--c-text-tertiary)] mt-1 line-clamp-2">{{ item.desc }}</div>
           </div>
         </a>
       </div>
     </div>
   </div>
-  <div class="prose">
-    <div class="table-of-contents  pl-10">
-      <div class="table-of-contents-anchor">
-        <div class="i-mdi-menu-open text-size-2xl" />
-      </div>
-      <ul class="pl-1">
-        <li v-for="key of Object.keys(projects)" :key="key">
-          <a :href="`#${slug(key)}`">{{ key }}</a>
-        </li>
-      </ul>
-    </div>
-  </div>
 </template>
 
-<style scoped>
-
-</style>

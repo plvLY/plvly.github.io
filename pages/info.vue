@@ -9,24 +9,21 @@ const size = 200
 </script>
 
 <template>
-  <div flex="~ col" class="px6 py-2 items-center" >
-    <div
-        class="circle-0 m10 items-center max-w-180"
-        flex="~ col sm:row gap6"
-    >
+  <div class="max-w-180 mx-auto px-6 md:px-10 py-10 slide-enter-content">
+    <div class="flex flex-col items-center mb-8">
       <client-only>
         <Starport
             :port="String(props.no)"
-            class="w-50 h-50 transition-all duration-800"
+            class="w-32 h-32 transition-all duration-800"
         >
           <Logo
-              class="rounded-1/2 shadow-xl"
+              class="rounded-full shadow-sm"
               :index="props.no"
           />
         </Starport>
       </client-only>
     </div>
-    <div class="prose m-auto slide-enter-content no-preference ">
+    <div class="prose m-auto no-preference">
       <ContentDoc path="/info"/>
     </div>
   </div>

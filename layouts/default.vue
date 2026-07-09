@@ -2,7 +2,7 @@
     <div>
       <Backdrop />
       <NavBar />
-      <main class="px-7 py-10">
+      <main>
           <slot />
       </main>
     </div>

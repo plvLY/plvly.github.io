@@ -1,115 +1,180 @@
 <script setup lang="ts">
-const appConfig = useAppConfig()
+const route = useRoute()
 
-function toTop(){
-  window.scrollTo({
-    top: 0,
-    behavior: 'smooth'
-  })
+const mobileMenuOpen = ref(false)
+
+function toggleMobile() {
+  mobileMenuOpen.value = !mobileMenuOpen.value
 }
 
-const { y: scroll } = useWindowScroll()
+const navLinks = [
+  { path: '/', title: '首页', icon: 'i-mdi-home' },
+  { path: '/posts', title: '文章', icon: 'i-mdi-file-document' },
+  { path: '/projects', title: 'Demo', icon: 'i-mdi-folder-cog' },
+  { path: '/info', title: '关于', icon: 'i-mdi-information' },
+  { path: '/message', title: '留言', icon: 'i-mdi-message-text' },
+]
+
+function isActive(path: string) {
+  if (path === '/') return route.path === '/'
+  return route.path.startsWith(path)
+}
 </script>
 
 <template>
   <header class="header z-40">
-    <client-only>
-      <button
-          title="Scroll to top"
-          class="fixed left-75% bottom-25 w-10 h-10 hover:bg-green 
-      hover-color-white transition duration-300 z-100 print:hidden border-rd-full border-0"
-          :class="scroll > 300 ? 'op70' : 'op0! pointer-events-none'"
-          @click="toTop()"
-      >TOP</button>
-    </client-only>
-
-    <div class="back fixed left-75% bottom-15 h-10 z-100" :class="$route.path !== '/' ? 'op100' : 'op0! pointer-events-none'">
-      <RouterLink
-          :to="$route.path.split('/').slice(0, -1).join('/') || '/'"
-      >
-        <span class="font-mono">> cd ../</span>
-      </RouterLink>
-    </div>
     <nav class="nav">
-      <div class="spacer print:op0"/>
-      <div class="right" >
-
-        <RouterLink to="/" title="首页">
-          <span class="lt-md:hidden">首页</span>
-          <div class="i-mdi-home md:hidden text-size-2xl"  />
-        </RouterLink>
-        <RouterLink to="/posts" title="文章">
-          <span class="lt-md:hidden">文章</span>
-          <div class="i-mdi-file-document md:hidden text-size-2xl"  />
-        </RouterLink>
-        <RouterLink to="/projects" title="项目">
-          <span class="lt-md:hidden">Demo</span>
-          <div class="i-mdi-folder-cog md:hidden text-size-2xl" />
-        </RouterLink>
-        <RouterLink to="/info" title="关于">
-          <span class="lt-md:hidden">关于</span>
-          <div class="i-mdi-information md:hidden text-size-2xl"  />
-        </RouterLink>
-        <RouterLink to="/message" title="留言">
-          <span class="lt-md:hidden">留言</span>
-          <div class="i-mdi-message-text md:hidden text-size-2xl"  />
-        </RouterLink>
-        <a href="https://gitee.com/plv-coding" target="_blank" title="Gitee" class="lt-md:hidden">
-          <div class="i-mdi-gitlab text-size-2xl" />
-        </a>
-        <a href="https://github.com/plvLY" target="_blank" title="GitHub" class="lt-md:hidden">
-          <div class="i-mdi-github text-size-2xl" />
-        </a>
-        <ToggleTheme />
+      <div class="nav-inner">
+        <div class="spacer" />
+        <div class="right">
+          <RouterLink
+            v-for="link in navLinks"
+            :key="link.path"
+            :to="link.path"
+            :title="link.title"
+            class="nav-link"
+            :class="{ active: isActive(link.path) }"
+          >
+            <span class="lt-md:hidden">{{ link.title }}</span>
+            <div :class="link.icon" class="md:hidden text-size-xl" />
+          </RouterLink>
+          <a href="https://gitee.com/plv-coding" target="_blank" title="Gitee" class="lt-md:hidden nav-link">
+            <div class="i-mdi-gitlab text-size-xl" />
+          </a>
+          <a href="https://github.com/plvLY" target="_blank" title="GitHub" class="lt-md:hidden nav-link">
+            <div class="i-mdi-github text-size-xl" />
+          </a>
+          <ToggleTheme />
+          <button
+            class="hidden lt-md:flex nav-link text-size-xl"
+            title="Menu"
+            @click="toggleMobile()"
+          >
+            <div :class="mobileMenuOpen ? 'i-mdi-close' : 'i-mdi-menu'" class="text-size-xl" />
+          </button>
+        </div>
       </div>
     </nav>
 
+    <div v-if="mobileMenuOpen" class="mobile-menu">
+      <RouterLink
+        v-for="link in navLinks"
+        :key="link.path"
+        :to="link.path"
+        class="mobile-menu-link"
+        :class="{ active: isActive(link.path) }"
+        @click="mobileMenuOpen = false"
+      >
+        <div :class="link.icon" class="text-size-lg" />
+        {{ link.title }}
+      </RouterLink>
+      <div class="mobile-menu-social">
+        <a href="https://gitee.com/plv-coding" target="_blank" title="Gitee" class="mobile-menu-link">
+          <div class="i-mdi-gitlab text-size-lg" />
+          Gitee
+        </a>
+        <a href="https://github.com/plvLY" target="_blank" title="GitHub" class="mobile-menu-link">
+          <div class="i-mdi-github text-size-lg" />
+          GitHub
+        </a>
+      </div>
+    </div>
   </header>
 </template>
 
 <style scoped>
-
-.header h1{
-  margin-bottom: 0;
+.header {
+  position: relative;
 }
+
 .nav {
-  padding: 2rem;
   width: 100%;
-  display: grid;
-  grid-template-columns: auto max-content;
   box-sizing: border-box;
 }
 
-.nav > * {
-  margin: auto;
+.nav-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
 }
 
-.nav img {
-  margin-bottom: 0;
+.nav-inner .spacer {
+  flex: 1;
 }
 
-.nav a,.back a {
+.nav .right {
+  display: flex;
+  gap: 0.875rem;
+  align-items: center;
+}
+
+.nav-link {
   cursor: pointer;
   text-decoration: none;
   color: inherit;
   transition: opacity 0.2s ease;
-  opacity: 0.6;
+  opacity: 0.5;
   outline: none;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0;
+  font-size: 0.9375rem;
 }
 
-.nav a:hover {
+.nav-link:hover {
+  opacity: 0.8;
+}
+
+.nav-link.active {
   opacity: 1;
-  text-decoration-color: inherit;
 }
 
-.nav .right {
-  display: grid;
-  grid-gap: 1.2rem;
-  grid-auto-flow: column;
+.mobile-menu {
+  position: fixed;
+  inset: 0;
+  top: 4rem;
+  z-index: 99;
+  background: var(--c-bg);
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+  gap: 0.25rem;
 }
 
-.nav .right > * {
-  margin: auto;
+.mobile-menu-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  text-decoration: none;
+  color: inherit;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  opacity: 0.6;
 }
 
+.mobile-menu-link:hover,
+.mobile-menu-link.active {
+  opacity: 1;
+  background: var(--c-surface-hover);
+}
+
+.mobile-menu-social {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--c-border);
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+@media (min-width: 768px) {
+  .mobile-menu {
+    display: none;
+  }
+}
 </style>

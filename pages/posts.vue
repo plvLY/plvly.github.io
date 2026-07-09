@@ -1,85 +1,65 @@
 <script setup lang="ts">
-import {formatDate} from "~/composables/utils";
-import type {ParsedContent} from "@nuxt/content";
+import { formatDate } from "~/composables/utils"
 
 useHead({
   title: '文章',
 })
 
 const getYear = (a: Date | string | number) => new Date(a).getFullYear()
-const isFuture = (a?: Date | string | number) => a && new Date(a) > new Date()
-const isSameYear = (a?: Date | string | number, b?: Date | string | number) => a && b && getYear(a) === getYear(b)
 
-/*是否是同一组*/
-function isSameGroup(a: ParsedContent, b?: ParsedContent) {
-  return (isFuture(a.date) === isFuture(b?.date)) && isSameYear(a.date, b?.date)
-}
+const { data: list } = await useAsyncData('posts', () =>
+  queryContent('/posts').sort({ date: -1 } as const).find()
+)
 
-/*提取年份 作为分类名称*/
-function getGroupName(p: ParsedContent) {
-  if (isFuture(p.date))
-    return 'Upcoming'
-  return getYear(p.date)
-}
-
-const query = { path: '/posts', sort: [{ date: -1 } as const] }
-
+const groupedByYear = computed(() => {
+  const groups: Record<number, { path: string; title: string; date: string; lang?: string; duration?: string }[]> = {}
+  for (const post of list.value || []) {
+    const year = getYear(post.date)
+    if (!groups[year]) groups[year] = []
+    groups[year].push({
+      path: post._path,
+      title: post.title,
+      date: post.date,
+      lang: post.lang,
+      duration: post.duration,
+    })
+  }
+  return Object.entries(groups)
+    .sort(([a], [b]) => +b - +a)
+    .map(([year, posts]) => ({ year: +year, posts }))
+})
 </script>
 
-<template >
-  <div class="prose m-auto p-l-40 slide-enter-content">
-    <ContentList :query="query">
-      <template #default="{ list }">
-        <div v-for="(post, idx) in list" :key="post._path">
-          <div
-              v-if="!isSameGroup(post, list[idx - 1])"
-              class="select-none relative h20 pointer-events-none slide-enter"
-              :style="{ '--enter-stage': idx-2, '--enter-step': '60ms', }"
-          >
-            <span class="text-8em color-transparent absolute left--3rem top--2rem font-bold text-stroke-2 text-stroke-hex-aaa op20">
-              {{ getGroupName(post) }}
-            </span>
-          </div>
-          <div class="slide-enter" :style="{ '--enter-stage': idx, '--enter-step': '60ms', }" >
-            <component
-                :is="'RouterLink'"
-                :to="post._path"
-                class="item block font-normal mb-6 mt-2 no-underline"
-            >
-              <li class="no-underline" flex="~ col md:row gap-2 md:items-center">
-                <div class="title text-lg leading-1.2em" flex="~ gap-2 wrap">
-                  <span
-                      v-if="post.lang"
-                      class="align-middle flex-none text-xs bg-zinc:15 text-zinc5 rounded px-1 py-0.5 ml--12 mr2 my-auto hidden md:block"
-                  >{{post.lang}}</span>
-                  <span class="align-middle">{{ post.title }}</span>
-                  <span
-                      v-if="post.redirect"
-                      class="align-middle op50 flex-none text-xs ml--1.5
-                      i-mdi-arrow-up-right"
-                      title="External"
-                  />
-                </div>
-                <div flex="~ gap-2 items-center">
-                  <span class="text-sm op50 ws-nowrap">
-                {{ formatDate(post.date, true) }}
-              </span>
-                  <span v-if="post.duration" class="text-sm op40 ws-nowrap">· {{ post.duration }}</span>
-                </div>
-              </li>
-            </component>
-          </div>
+<template>
+  <div class="max-w-180 mx-auto px-6 md:px-10 py-10 slide-enter-content">
+    <div class="max-w-140 mx-auto">
+      <div v-for="group in groupedByYear" :key="group.year" class="mb-10">
+        <div class="text-xs font-medium tracking-widest text-[var(--c-text-tertiary)] uppercase mb-4 select-none">
+          {{ group.year }}
         </div>
-      </template>
-      <template #not-found>
-        <p>No articles found.</p>
-      </template>
-    </ContentList>
+        <div class="space-y-0.5">
+          <RouterLink
+            v-for="post in group.posts"
+            :key="post.path"
+            :to="post.path"
+            class="post-row flex items-baseline gap-3 px-1 py-2 rounded-lg transition-all duration-200 no-underline text-inherit group"
+          >
+            <span class="text-xs text-[var(--c-text-tertiary)] flex-none w-12 text-right tabular-nums select-none">
+              {{ formatDate(post.date, true) }}
+            </span>
+            <span class="text-sm font-medium truncate flex-1 group-hover:text-[hsl(217,65%,55%)] transition-colors">
+              {{ post.title }}
+            </span>
+            <span v-if="post.duration" class="text-xs text-[var(--c-text-tertiary)] flex-none op50 select-none">
+              {{ post.duration }}
+            </span>
+          </RouterLink>
+        </div>
+      </div>
+
+      <p v-if="!groupedByYear.length" class="text-center text-[var(--c-text-tertiary)] py-20">
+        暂无文章
+      </p>
+    </div>
   </div>
-
-
 </template>
-
-<style scoped>
-
-</style>

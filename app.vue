@@ -16,8 +16,8 @@ import {StarportCarrier} from "vue-starport";
 const appConfig = useAppConfig()
 
 useSeoMeta({
-  title: () => `${appConfig.title} - 简约博客`,
-  ogTitle: () => `${appConfig.title} - 简约博客`,
-  description: 'PLV 的个人博客站点',
+  title: () => `${appConfig.title}`,
+  ogTitle: () => `${appConfig.title}`,
+  description: 'PLV 的个人博客',
 })
 </script>
