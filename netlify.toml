@@ -9,3 +9,5 @@
 
 [build.environment]
   NITRO_PRESET = "netlify"
+  PNPM_FLAGS = "--shamefully-hoist"
+  NODE_VERSION = "20"
