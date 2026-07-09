@@ -1,73 +1,90 @@
 <script setup lang="ts">
-import {formatDate, getCurrentDate} from "~/composables/utils";
+import type { Message } from '~/types'
+import { formatDate, getCurrentDate } from '~/composables/utils'
 import PIcon from '~/components/PIcon.vue'
 
-const flag = false
+useHead({
+  title: '留言',
+})
 
-let msg = ref()
-let msgList: any = ref([])
+const msg = ref('')
+const msgList = ref<Message[]>([])
+const location = ref('')
+const ip = ref('')
+const loading = ref(false)
 
-if(flag){
-// 获取数据
-// const { data } = await $fetch('/api/message2DB',{method: 'POST'})
-  const {rows} = await $fetch('/api/db/query',{method: 'POST'})
-  msgList.value = rows
+onMounted(async () => {
+  try {
+    const [{ rows }, addrRes] = await Promise.all([
+      $fetch<{ rows: Message[] }>('/api/db/query'),
+      $fetch('/api/ip-utils').catch(() => null),
+    ])
+    msgList.value = rows
 
-//获取当前IP位置相信
-  const address = await $fetch('/api/ip-utils',{method: 'POST'})
-  const ip = address?Object.keys(address.data)[0] : undefined
-  const nation = address ? Object.values(address.data)[0]?.nation : '银河'
-  const province = address ? Object.values(address.data)[0]?.province : '太阳系'
-  const city = address ? Object.values(address.data)[0]?.city : '地球'
-  const location = nation.concat('·').concat(province).concat('·').concat(city)
-// console.log(address.data,Object.keys(address.data),Object.values(address.data))
-}
+    if (addrRes?.data) {
+      const key = Object.keys(addrRes.data)[0]
+      ip.value = key
+      const loc = Object.values(addrRes.data)[0] as Record<string, string>
+      location.value = [loc.nation, loc.province, loc.city].filter(Boolean).join('·')
+    }
+  } catch {
+    // 离线或首次部署时静默失败
+  }
+})
 
-// 保存文件
 async function saveMd() {
-  if (!msg.value) return false
-  const {rows } = await $fetch('/api/db/insert',
-    {
+  if (!msg.value || loading.value) return
+  loading.value = true
+  try {
+    const { rows } = await $fetch<{ rows: Message[] }>('/api/db/insert', {
       method: 'POST',
-      body: {msg: msg.value,date:getCurrentDate(),addr:location,ip:ip}
+      body: { msg: msg.value.trim(), date: getCurrentDate(), addr: location.value, ip: ip.value },
     })
-  console.log(rows)
-  msgList.value = rows
+    msgList.value = rows
+    msg.value = ''
+  } catch (e) {
+    console.error('Failed to save message', e)
+  } finally {
+    loading.value = false
+  }
 }
 </script>
 
 <template>
   <div class="prose m-auto slide-enter-content">
-    <div class="">
-      <input placeholder="简简单单说句话" type="text" v-model.trim="msg"
-       class="border mr h10 w100 border-rounded-3 text-center text-zinc5 text-1.1em hover:border-amber focus:outline-none
-      "
-    />
-<!--      <button class="w-25 h-10 border-rounded-3 dark:op90 op50 hover:op100" @click="saveMd">-->
-      <button class="w-25 h-10 border-rounded-3 dark:op90 op50 hover:op100" >
-        <PIcon :name="'SendAltFilled'" class-name="w-6 align-middle color-emerald"/>
+    <div class="flex gap-2 items-center justify-center pt-4">
+      <input
+        v-model.trim="msg"
+        placeholder="说句话吧……"
+        type="text"
+        class="border mr h10 w-100 border-rounded-3 text-center text-zinc5 text-1.1em hover:border-amber focus:outline-none"
+        @keyup.enter="saveMd"
+      >
+      <button
+        class="w-25 h-10 border-rounded-3 dark:op90 op50 hover:op100"
+        :disabled="loading || !msg"
+        @click="saveMd"
+      >
+        <PIcon :name="'SendAltFilled'" class-name="w-6 align-middle color-emerald" />
         说两句
       </button>
     </div>
-<!--    <ContentDoc path="/message"/>-->
-    <div v-if="!flag" class="pt-10 op70 color-amber">线上先关闭这个功能-netlify部署写入有点小麻烦!!</div>
-    <div v-else class="pt-10">
-      <div class=" align-middle" flex="~ gap-2 wrap" v-for="item in msgList">
 
-        <span class="op70">{{item.msg}}</span>
-        <div flex="~ gap-2 items-center">
-          <span class="text-xs op50 ws-nowrap">
-            {{ item.date }}
-          </span>
-        </div>
+    <div class="pt-10 space-y-4">
+      <div v-for="item in msgList" :key="item.id" class="flex gap-2 items-center justify-center flex-wrap">
+        <span class="op70">{{ item.msg }}</span>
+        <span class="text-xs op50 ws-nowrap">{{ formatDate(item.date) }}</span>
         <span
           v-if="item.addr"
-          class="align-middle flex-none text-xs  rounded px-1 py-0.5  ml2 my-auto hidden md:block"
+          class="flex-none text-xs rounded px-1 py-0.5 hidden md:block"
         >
-          <PIcon :name="'LocationFilled'" class-name="w-4 align-middle color-green"/>
-          {{item.addr}}
+          <PIcon :name="'LocationFilled'" class-name="w-4 align-middle color-green" />
+          {{ item.addr }}
         </span>
       </div>
+      <p v-if="!msgList.length" class="text-center op40 pt-10">
+        还没有留言，来说第一句话吧！
+      </p>
     </div>
   </div>
 </template>

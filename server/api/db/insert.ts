@@ -1,11 +1,21 @@
+import { getStore } from '@netlify/blobs'
+
 export default defineEventHandler(async (event) => {
-  const db = useDatabase()
-  let body = await readBody(event)
-  console.log(body)
-  const id = String(Math.round(Math.random() * 10_000));
-  await db.sql`INSERT INTO plv_pv VALUES (${id}, ${body.msg}, ${body.ip}, ${body.date},${body.addr})`;
+  const body = await readBody(event)
 
-  const { rows } = await db.sql`SELECT * FROM plv_pv order by date desc `;
+  if (!body.msg || typeof body.msg !== 'string' || body.msg.length > 500) {
+    throw createError({ statusCode: 400, message: 'Invalid message' })
+  }
 
-  return {rows};
+  const store = getStore('plv-blog')
+  const messages = (await store.get('messages', { type: 'json' })) || []
+  messages.unshift({
+    id: crypto.randomUUID(),
+    msg: body.msg.trim(),
+    ip: body.ip ?? '',
+    date: body.date ?? '',
+    addr: body.addr ?? '',
+  })
+  await store.setJSON('messages', messages)
+  return { rows: messages }
 })
