@@ -1,0 +1,5 @@
+// ROLLUP_NO_REPLACE 
+ const contentNavigation = "[{\"title\":\"PLV\",\"_path\":\"/\"},{\"title\":\"Introduction\",\"_path\":\"/info\"},{\"title\":\"留言板块\",\"_path\":\"/message\",\"children\":[{\"title\":\"留言板块\",\"_path\":\"/message\"}]},{\"title\":\"Posts\",\"_path\":\"/posts\",\"children\":[{\"title\":\"关于博客\",\"_path\":\"/posts/about\"},{\"title\":\"ComfyUI本地部署及配置Flux模型\",\"_path\":\"/posts/comfyui\"},{\"title\":\"本地部署DeepSeek-1.5b智障版\",\"_path\":\"/posts/deepseek\"},{\"title\":\"HarmonyOS应用开发02 - UI开发\",\"_path\":\"/posts/harmonyos-base\"},{\"title\":\"HarmonyOS应用开发01 - 目录结构\",\"_path\":\"/posts/harmonyos-dir\"},{\"title\":\"HarmonyOS应用开发00 - 环境搭建\",\"_path\":\"/posts/harmonyos-env\"},{\"title\":\"使用Docker部署Embedding模型\",\"_path\":\"/posts/lightweightembeddings\"},{\"title\":\"Stable Audio Open 文生音频\",\"_path\":\"/posts/stableaudioopen\"},{\"title\":\"分类测试-2022\",\"_path\":\"/posts/test2022\"},{\"title\":\"分类测试-2023\",\"_path\":\"/posts/test2023\"}]},{\"title\":\"Demo Link\",\"_path\":\"/projects\"}]";
+
+export { contentNavigation as default };
+//# sourceMappingURL=content-navigation.mjs.map
