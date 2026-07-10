@@ -6,7 +6,7 @@ definePageMeta({
 })
 
 const TOKEN_KEY = 'plv_admin_token'
-const token = ref(useRoute().query.token as string || localStorage.getItem(TOKEN_KEY) || '')
+const token = ref(useRoute().query.token as string || '')
 const stats = ref<DetailedStats | null>(null)
 const error = ref('')
 const loading = ref(true)
@@ -86,10 +86,14 @@ function city(addr: string | null) {
   return parts[0]
 }
 
-if (token.value) {
-  fetchStats()
-  fetchMessages()
-}
+onMounted(() => {
+  const t = token.value || localStorage.getItem(TOKEN_KEY) || ''
+  if (t) {
+    token.value = t
+    fetchStats()
+    fetchMessages()
+  }
+})
 
 function maxCount(items: { count: number }[]) {
   return items.length ? Math.max(...items.map(i => i.count)) : 1
