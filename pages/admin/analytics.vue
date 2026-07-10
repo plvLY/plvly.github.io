@@ -95,6 +95,20 @@ onMounted(() => {
   }
 })
 
+function pagesToShow(current: number, total: number): (number | '...')[] {
+  if (total <= 7) {
+    return Array.from({ length: total }, (_, i) => i + 1)
+  }
+  const pages: (number | '...')[] = [1]
+  if (current > 3) pages.push('...')
+  const start = Math.max(2, current - 1)
+  const end = Math.min(total - 1, current + 1)
+  for (let i = start; i <= end; i++) pages.push(i)
+  if (current < total - 2) pages.push('...')
+  if (total > 1) pages.push(total)
+  return pages
+}
+
 function maxCount(items: { count: number }[]) {
   return items.length ? Math.max(...items.map(i => i.count)) : 1
 }
@@ -273,7 +287,7 @@ async function deleteMessage(id: string) {
               </table>
             </div>
 
-            <div v-if="visitsTotalPages > 1" class="flex items-center justify-center gap-1.5 mt-4">
+            <div class="flex items-center justify-center gap-1.5 mt-4">
               <button
                 class="px-2.5 py-1 rounded text-sm border border-[var(--c-border)] disabled:opacity-30 transition-all duration-200 hover:bg-surface-hover"
                 :disabled="visitsPage <= 1"
@@ -281,15 +295,17 @@ async function deleteMessage(id: string) {
               >
                 &lt;
               </button>
-              <span
-                v-for="p in visitsTotalPages"
-                :key="p"
-                class="px-2.5 py-1 rounded text-sm cursor-pointer transition-all duration-200"
-                :class="p === visitsPage ? 'bg-brand-primary/10 text-brand-primary' : 'hover:bg-surface-hover'"
-                @click="goPage(p)"
-              >
-                {{ p }}
-              </span>
+              <template v-for="p in pagesToShow(visitsPage, visitsTotalPages)" :key="p">
+                <span v-if="p === '...'" class="px-1 text-[var(--c-text-tertiary)] select-none">···</span>
+                <span
+                  v-else
+                  class="px-2.5 py-1 rounded text-sm cursor-pointer transition-all duration-200"
+                  :class="p === visitsPage ? 'bg-brand-primary/10 text-brand-primary' : 'hover:bg-surface-hover'"
+                  @click="goPage(p)"
+                >
+                  {{ p }}
+                </span>
+              </template>
               <button
                 class="px-2.5 py-1 rounded text-sm border border-[var(--c-border)] disabled:opacity-30 transition-all duration-200 hover:bg-surface-hover"
                 :disabled="visitsPage >= visitsTotalPages"
