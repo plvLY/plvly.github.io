@@ -36,9 +36,11 @@ const filteredPosts = computed(() => {
   if (!meta.value) return []
   const posts = list.value || []
 
-  return slug === 'other'
+  const filtered = slug === 'other'
     ? posts.filter(p => !p.collection)
     : posts.filter(p => p.collection === slug)
+
+  return filtered.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
 })
 
 const groupedByYear = computed(() => {

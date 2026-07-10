@@ -139,7 +139,7 @@ plv.io/
 │   └── reading-time.ts          # Nuxt Content 转换器：自动注入阅读时长
 │
 ├── public/                      # 静态资源
-├── .env                         # ANALYTICS_SECRET
+├── .env                         # 环境变量配置
 └── .data/db.sqlite3             # 本地开发数据库（Blobs 回退）
 ```
 
@@ -167,22 +167,20 @@ plv.io/
 └─────────┼───────────────┼────────────────┼──────────────┘
           │               │                │
           ▼               ▼                ▼
-┌─────────────────────────────────────────────────────────┐
-│                    Nitro Server (CDN Edge)                │
-│                                                           │
-│  ┌──────────────────────────────────────────────────┐    │
-│  │             API 路由层                              │    │
-│  │  /api/analytics/*   /api/db/*   /api/ip-utils     │    │
-│  └──────────┬───────────────────────────┬────────────┘    │
-│             │                           │                  │
-│             ▼                           ▼                  │
-│  ┌─────────────────┐        ┌──────────────────────┐      │
-│  │  Netlify Blobs   │        │  ip-api.com (外部)    │      │
-│  │  - plv-blog 存储 │        │  Geo IP 定位 + 缓存   │      │
-│  │  - visits/*      │        └──────────────────────┘      │
-│  │  - messages      │                                      │
-│  └─────────────────┘                                       │
-└───────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────┐
+│           Nitro Server (CDN Edge)        │
+│                                          │
+│  ┌──────────────────────────────────┐    │
+│  │         API 路由层                │    │
+│  │  访客分析 · 留言板 · IP 定位      │    │
+│  └──────────┬───────────────────┬───┘    │
+│             │                   │         │
+│             ▼                   ▼         │
+│  ┌─────────────────┐  ┌──────────────┐   │
+│  │  Netlify Blobs   │  │  Geo IP 定位  │   │
+│  │  数据持久化       │  │  + 缓存       │   │
+│  └─────────────────┘  └──────────────┘   │
+└──────────────────────────────────────────┘
 
                     内容渲染链路：
 
@@ -270,18 +268,16 @@ Nuxt Content 内置 Shiki 高亮，支持 light/dark 双主题：
 
 ### 6.3 访客分析
 
-- **客户端追踪**：`useAnalytics` composable 通过 `navigator.sendBeacon` 向 `/api/analytics/record` 发送 POST 请求
-- **去重机制**：sessionStorage 标记 `plv_session_recorded`，同一会话仅上报一次
-- **Bot 过滤**：服务端 `isBot()` 正则匹配常见爬虫 User-Agent
-- **Geo IP**：通过 ip-api.com 查询国家·省份·城市，内存 60s 缓存
-- **公开计数**：`/api/analytics/public` 返回总访客数，60s 服务端缓存
-- **管理后台**：`/admin` 路由，Token 验证（`ANALYTICS_SECRET`），展示总览卡片、30 日趋势柱状图、页面排行、地域分布、访客明细
+- 客户端通过 `sendBeacon` 发送页面访问记录，同一会话仅上报一次
+- 服务端自动过滤爬虫、查询地理信息
+- 首页展示公开访客总数
+- 管理后台展示总览卡片、30 日趋势、页面排行、地域分布、访客明细（需身份验证）
 
 ### 6.4 留言板
 
-- 用户输入留言（最长 500 字符），提交至 `/api/db/insert`
-- 自动记录 IP 与地理信息，存入 Netlify Blobs
-- 留言列表通过 `/api/db/query` 加载
+- 访客提交留言，服务端自动记录 IP 与地理信息
+- 内置反垃圾防护：频率限制、Bot 检测、Honeypot 隐藏字段
+- 支持留言管理（需身份验证）
 
 ### 6.5 明暗主题
 
@@ -299,37 +295,11 @@ Nuxt Content 内置 Shiki 高亮，支持 light/dark 双主题：
 
 ## 7. API 接口
 
-### 7.1 访客分析
+Nitro 服务端提供以下功能接口，均通过 HTTP 访问：
 
-| 端点 | 方法 | 认证 | 参数 | 返回 |
-|------|------|------|------|------|
-| `/api/analytics/public` | GET | 无 | — | `{ totalVisits: number }` |
-| `/api/analytics/record` | POST | 无 | `{ path: string }` | `{ ok: true }` |
-| `/api/analytics/stats` | GET | `?token=` | `ANALYTICS_SECRET` | `DetailedStats` |
-| `/api/analytics/visits` | GET | `?token=` | `&page=&pageSize=&days=` | 分页 `VisitRecord[]` |
-
-- `record` 自动读取 `x-forwarded-for` / `x-real-ip` 作为客户端 IP
-- `record` 内置 Bot 检测，爬虫访问不记录
-- `stats` 和 `visits` 需在 `?token=` 参数中传入 `ANALYTICS_SECRET`
-- `stats` 30s 缓存，`public` 60s 缓存
-
-### 7.2 留言板
-
-| 端点 | 方法 | 参数 | 返回 |
-|------|------|------|------|
-| `/api/db/query` | GET | — | `{ rows: Message[] }` |
-| `/api/db/insert` | POST | `{ msg: string }` | `{ rows: Message[] }` |
-
-- `insert` 验证 `msg` 长度 ≤ 500 字符
-- `insert` 自动记录客户端 IP
-
-### 7.3 IP 定位
-
-| 端点 | 方法 | 参数 | 返回 |
-|------|------|------|------|
-| `/api/ip-utils` | GET | — | `{ ip, nation, province, city } \| null` |
-
-- 依赖 `ip-api.com` 接口，内存 60s 缓存
+- **访客分析** — 记录页面访问、返回公开访客总数、提供详细的统计数据（管理接口需身份验证）
+- **留言板** — 提交留言、查询留言列表、删除留言（管理接口需身份验证）
+- **IP 定位** — 根据客户端 IP 返回地理信息（国家·省份·城市）
 
 ---
 
@@ -376,8 +346,7 @@ cd plv.io
 # 2. 安装依赖
 pnpm install
 
-# 3. 配置环境变量（可选）
-# 在 .env 中设置 ANALYTICS_SECRET 以使用分析后台
+# 3. 按需配置环境变量
 
 # 4. 启动开发
 pnpm dev
@@ -385,21 +354,17 @@ pnpm dev
 
 ### 9.4 Netlify 部署
 
-- 自动检测 `netlify.toml`，构建命令 `nuxt build`
-- 预设 `NITRO_PRESET = "netlify"` 启用 Netlify 适配器
-- Node 版本 20，pnpm 使用 `--shamefully-hoist`
-- 需在 Netlify 后台设置环境变量 `ANALYTICS_SECRET`
+- 自动检测 `netlify.toml` 配置构建
+- 需在 Netlify 后台配置相关环境变量
 - 需要启用 Netlify Blobs 插件用于数据存储
 
 ---
 
 ## 10. 配置参考
 
-### 10.1 环境变量 `.env`
+### 10.1 环境变量
 
-| 变量 | 必需 | 说明 |
-|------|------|------|
-| `ANALYTICS_SECRET` | 是（分析后台） | 访客统计后台 Token 验证密钥 |
+项目依赖若干环境变量用于管理后台的身份验证和功能开关，在 Netlify 部署面板或本地 `.env` 文件中配置。
 
 ### 10.2 nuxt.config.ts 要点
 
@@ -423,16 +388,6 @@ pnpm dev
 | **快捷方式** | `bg-base` / `bg-surface` / `border-base` / `container-main` / `container-wide` |
 | **品牌色** | `brand-primary`: hsl(217, 65%, 55%) |
 | **安全列表** | 预声明 `i-ri-menu-2-fill`, `i-mdi-*` 系列图标 |
-
-### 10.4 netlify.toml
-
-| 配置 | 值 |
-|------|-----|
-| **Build 命令** | `nuxt build` |
-| **发布目录** | `dist` |
-| **NITRO_PRESET** | `netlify` |
-| **NODE_VERSION** | `20` |
-| **PNPM_FLAGS** | `--shamefully-hoist` |
 
 ---
 

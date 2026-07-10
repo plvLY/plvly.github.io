@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { Message } from '~/types'
-import { formatDate, getCurrentDate } from '~/composables/utils'
+import { formatDate } from '~/composables/utils'
 import PIcon from '~/components/PIcon.vue'
 
 useHead({
@@ -9,48 +9,41 @@ useHead({
 
 const msg = ref('')
 const msgList = ref<Message[]>([])
-const location = ref('')
-const ip = ref('')
 const loading = ref(false)
+const cooldown = ref(false)
 const errorMsg = ref('')
 
 let errorTimer: ReturnType<typeof setTimeout> | null = null
-function showError(msg: string) {
-  errorMsg.value = msg
+function showError(text: string) {
+  errorMsg.value = text
   if (errorTimer) clearTimeout(errorTimer)
   errorTimer = setTimeout(() => { errorMsg.value = '' }, 4000)
 }
 
 onMounted(async () => {
   try {
-    const [{ rows, error: queryErr }, addrRes] = await Promise.all([
-      $fetch<{ rows: Message[]; error?: string }>('/api/db/query'),
-      $fetch('/api/ip-utils').catch(() => null),
-    ])
+    const { rows, error: queryErr } = await $fetch<{ rows: Message[]; error?: string }>('/api/db/query')
     msgList.value = rows
     if (queryErr) showError(queryErr)
-
-    if (addrRes) {
-      ip.value = addrRes.ip ?? ''
-      location.value = [addrRes.nation, addrRes.province, addrRes.city].filter(Boolean).join('·')
-    }
   } catch {
     showError('留言加载失败')
   }
 })
 
 async function saveMd() {
-  if (!msg.value || loading.value) return
+  if (!msg.value || loading.value || cooldown.value) return
   loading.value = true
   try {
     const { rows } = await $fetch<{ rows: Message[] }>('/api/db/insert', {
       method: 'POST',
-      body: { msg: msg.value.trim(), date: getCurrentDate(), addr: location.value, ip: ip.value },
+      body: { msg: msg.value.trim() },
     })
     msgList.value = rows
     msg.value = ''
     errorMsg.value = ''
-  } catch (e) {
+    cooldown.value = true
+    setTimeout(() => { cooldown.value = false }, 30_000)
+  } catch {
     showError('留言保存失败，请稍后再试')
   } finally {
     loading.value = false
@@ -67,16 +60,25 @@ async function saveMd() {
             v-model.trim="msg"
             placeholder="说句话吧……"
             type="text"
+            autocomplete="off"
             class="flex-1 h-10 px-3 text-sm bg-transparent border-none outline-none text-inherit"
             @keyup.enter="saveMd"
           >
+          <!-- Honeypot: invisible to humans, bots fill it -->
+          <input
+            name="website"
+            type="text"
+            tabindex="-1"
+            autocomplete="off"
+            class="h-0 w-0 p-0 m-0 border-none outline-none absolute opacity-0 pointer-events-none"
+          >
           <button
             class="h-10 px-4 flex items-center gap-1.5 text-sm transition-all duration-200 disabled:opacity-40"
-            :disabled="loading || !msg"
+            :disabled="loading || cooldown || !msg"
             @click="saveMd"
           >
             <PIcon name="SendAltFilled" class-name="w-4 align-middle" :class="msg ? 'text-[hsl(217,65%,55%)]' : ''" />
-            <span class="hidden sm:inline">发送</span>
+            <span class="hidden sm:inline">{{ cooldown ? '冷却中' : '发送' }}</span>
           </button>
         </div>
       </div>
