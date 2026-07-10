@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { DetailedStats } from '~/types'
+import type { DetailedStats, VisitRecord } from '~/types'
 
 definePageMeta({
   alias: ['/admin'],
@@ -11,11 +11,21 @@ const stats = ref<DetailedStats | null>(null)
 const error = ref('')
 const loading = ref(true)
 
+const visits = ref<VisitRecord[]>([])
+const visitsTotal = ref(0)
+const visitsPage = ref(1)
+const visitsTotalPages = ref(0)
+const visitsLoading = ref(false)
+const pageSize = 50
+
 async function fetchStats() {
   loading.value = true
   error.value = ''
   try {
-    const res = await $fetch<DetailedStats>(`/api/analytics/stats?token=${token.value}`)
+    const [res, visitRes] = await Promise.all([
+      $fetch<DetailedStats>(`/api/analytics/stats?token=${token.value}`),
+      fetchVisits(1, false),
+    ])
     stats.value = res
     localStorage.setItem(TOKEN_KEY, token.value)
   } catch (e: any) {
@@ -28,6 +38,52 @@ async function fetchStats() {
   } finally {
     loading.value = false
   }
+}
+
+async function fetchVisits(page: number, toggleLoading = true) {
+  if (toggleLoading) visitsLoading.value = true
+  try {
+    const res = await $fetch<{
+      items: VisitRecord[]
+      total: number
+      page: number
+      pageSize: number
+      totalPages: number
+    }>(`/api/analytics/visits?token=${token.value}&page=${page}&pageSize=${pageSize}&days=7`)
+    visits.value = res.items
+    visitsTotal.value = res.total
+    visitsPage.value = res.page
+    visitsTotalPages.value = Math.max(1, res.totalPages)
+  } catch {
+    visits.value = []
+  } finally {
+    if (toggleLoading) visitsLoading.value = false
+  }
+}
+
+function goPage(p: number) {
+  if (p < 1 || p > visitsTotalPages.value || p === visitsPage.value) return
+  fetchVisits(p)
+}
+
+function fmtTime(iso: string) {
+  const d = new Date(iso)
+  const mm = String(d.getMonth() + 1).padStart(2, '0')
+  const dd = String(d.getDate()).padStart(2, '0')
+  const hh = String(d.getHours()).padStart(2, '0')
+  const mi = String(d.getMinutes()).padStart(2, '0')
+  return `${mm}-${dd} ${hh}:${mi}`
+}
+
+function shortPath(p: string) {
+  return p || '/'
+}
+
+function city(addr: string | null) {
+  if (!addr) return '-'
+  const parts = addr.split('·')
+  if (parts[0] === '中国') return parts.slice(1).filter(Boolean).join('·') || '中国'
+  return parts[0]
 }
 
 if (token.value) {
@@ -143,6 +199,72 @@ function pct(count: number, items: { count: number }[]) {
               </div>
             </div>
           </div>
+        </div>
+
+        <!-- visitor list -->
+        <div class="rounded-xl border border-[var(--c-border)] p-4 mt-4">
+          <h2 class="text-sm font-medium m-0 mb-3">
+            访客列表
+            <span class="text-[var(--c-text-tertiary)] font-normal">（最近 7 天，共 {{ visitsTotal }} 条）</span>
+          </h2>
+
+          <div v-if="visitsLoading" class="text-sm text-[var(--c-text-tertiary)] py-4">加载中...</div>
+
+          <div v-else-if="!visits.length" class="text-sm text-[var(--c-text-tertiary)] py-4">暂无数据</div>
+
+          <template v-else>
+            <div class="overflow-x-auto">
+              <table class="w-full text-sm">
+                <thead>
+                  <tr class="text-[var(--c-text-tertiary)] border-b border-[var(--c-border)]">
+                    <th class="text-left font-normal py-2 pr-3 w-34">IP</th>
+                    <th class="text-left font-normal py-2 pr-3 w-26">城市</th>
+                    <th class="text-left font-normal py-2 pr-3">页面</th>
+                    <th class="text-left font-normal py-2 w-22">时间</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    v-for="v in visits"
+                    :key="v.id"
+                    class="border-b border-[var(--c-border)] last:border-none"
+                    :title="v.ua || undefined"
+                  >
+                    <td class="py-2 pr-3 font-mono text-xs align-top whitespace-nowrap">{{ v.ip }}</td>
+                    <td class="py-2 pr-3 align-top whitespace-nowrap">{{ city(v.addr) }}</td>
+                    <td class="py-2 pr-3 align-top truncate max-w-40">{{ shortPath(v.path) }}</td>
+                    <td class="py-2 align-top whitespace-nowrap text-[var(--c-text-tertiary)]">{{ fmtTime(v.time) }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div v-if="visitsTotalPages > 1" class="flex items-center justify-center gap-1.5 mt-4">
+              <button
+                class="px-2.5 py-1 rounded text-sm border border-[var(--c-border)] disabled:opacity-30 transition-all duration-200 hover:bg-surface-hover"
+                :disabled="visitsPage <= 1"
+                @click="goPage(visitsPage - 1)"
+              >
+                &lt;
+              </button>
+              <span
+                v-for="p in visitsTotalPages"
+                :key="p"
+                class="px-2.5 py-1 rounded text-sm cursor-pointer transition-all duration-200"
+                :class="p === visitsPage ? 'bg-brand-primary/10 text-brand-primary' : 'hover:bg-surface-hover'"
+                @click="goPage(p)"
+              >
+                {{ p }}
+              </span>
+              <button
+                class="px-2.5 py-1 rounded text-sm border border-[var(--c-border)] disabled:opacity-30 transition-all duration-200 hover:bg-surface-hover"
+                :disabled="visitsPage >= visitsTotalPages"
+                @click="goPage(visitsPage + 1)"
+              >
+                &gt;
+              </button>
+            </div>
+          </template>
         </div>
       </template>
     </div>
