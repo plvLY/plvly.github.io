@@ -1,7 +1,7 @@
 import { getStore } from '@netlify/blobs'
-import { getGeoInfo, isBot } from '../utils/analytics'
-import { getAllMessages, stripIps } from '../utils/messages'
-import type { StoredMessage } from '../utils/messages'
+import { getGeoInfo, isBot } from '~/server/utils/analytics'
+import { getAllMessages, stripIps } from '~/server/utils/messages'
+import type { StoredMessage } from '~/server/utils/messages'
 
 const RATE_INTERVAL = 30_000
 const HOURLY_WINDOW = 3_600_000

@@ -1,4 +1,4 @@
-import { getAllMessages, stripIps } from '../utils/messages'
+import { getAllMessages, stripIps } from '~/server/utils/messages'
 
 export default defineEventHandler(async () => {
   try {
