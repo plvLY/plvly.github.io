@@ -16,7 +16,7 @@ const visitsTotal = ref(0)
 const visitsPage = ref(1)
 const visitsTotalPages = ref(0)
 const visitsLoading = ref(false)
-const pageSize = 50
+const pageSize = 5
 
 async function fetchStats() {
   loading.value = true
