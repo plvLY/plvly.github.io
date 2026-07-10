@@ -2,7 +2,6 @@
 title: 关于博客
 description: 博客的一些东西
 date: 2024-04-13
-duration: 2min
 lang: 闲言
 author: plv
 ---

@@ -14,6 +14,8 @@ export default defineConfig({
             'bg-base': 'bg-[var(--c-bg)]',
             'bg-surface': 'bg-[var(--c-surface)]',
             'border-base': 'border-[var(--c-border)]',
+            'container-main': 'max-w-240 mx-auto px-5 md:px-8 py-10',
+            'container-wide': 'max-w-300 mx-auto px-5 md:px-8 py-10',
         },
         [/^btn-(\w+)$/, ([_, color]) => `op50 px2.5 py1 transition-all duration-200 ease-out no-underline! hover:(op100 text-${color} bg-${color}/10) border border-base! rounded`],
     ],
@@ -65,5 +67,7 @@ export default defineConfig({
     ],
     safelist: [
         'i-ri-menu-2-fill',
+        'container-main',
+        'container-wide',
     ],
 })

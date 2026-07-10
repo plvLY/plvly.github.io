@@ -2,7 +2,6 @@
 title: HarmonyOS应用开发02 - UI开发
 description: HarmonyOS应用开发
 date: 2024-06-22
-duration: 30min
 lang: 鸿蒙
 ---
 

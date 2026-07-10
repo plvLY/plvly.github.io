@@ -3,7 +3,7 @@ import {Starport} from "vue-starport";
 </script>
 
 <template>
-  <div class="max-w-180 mx-auto px-6 md:px-10 py-10 slide-enter-content">
+  <div class="container-main slide-enter-content">
     <div class="flex flex-col items-center mb-10">
       <div class="w-20 h-20 mb-4">
         <RouterLink to="/info">
@@ -24,7 +24,7 @@ import {Starport} from "vue-starport";
       <p class="text-sm text-[var(--c-text-tertiary)] mt-1.5">个人博客 / 技术笔记</p>
     </div>
 
-    <div class="prose m-auto no-preference">
+    <div class="prose !max-w-none">
       <ContentDoc path="/"/>
     </div>
   </div>

@@ -9,7 +9,7 @@ const size = 200
 </script>
 
 <template>
-  <div class="max-w-180 mx-auto px-6 md:px-10 py-10 slide-enter-content">
+  <div class="container-main slide-enter-content">
     <div class="flex flex-col items-center mb-8">
       <client-only>
         <Starport
@@ -23,7 +23,7 @@ const size = 200
         </Starport>
       </client-only>
     </div>
-    <div class="prose m-auto no-preference">
+    <div class="prose !max-w-none">
       <ContentDoc path="/info"/>
     </div>
   </div>

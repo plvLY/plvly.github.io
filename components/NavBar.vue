@@ -93,9 +93,9 @@ function isActive(path: string) {
 }
 
 .nav-inner {
-  max-width: 1280px;
+  max-width: 72rem;
   margin: 0 auto;
-  padding: 1rem 2rem;
+  padding: 1rem 1.5rem;
   display: flex;
   align-items: center;
 }

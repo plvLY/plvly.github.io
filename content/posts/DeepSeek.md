@@ -2,7 +2,6 @@
 title: 本地部署DeepSeek-1.5b智障版
 description: 本地部署 deepseek-r1:1.5b`
 date: 2025-03-24 17:34
-duration: 5min
 lang: AI
 author: plv
 ---

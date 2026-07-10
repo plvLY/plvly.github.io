@@ -2,7 +2,6 @@
 title: ComfyUI本地部署及配置Flux模型
 description: ComfyUI本地部署及配置Flux模型
 date: 2024-09-27
-duration: 10min
 lang: AI
 author: plv
 ---

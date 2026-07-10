@@ -1,4 +1,5 @@
 import Icons from 'unplugin-icons/vite'
+
 export default defineNuxtConfig({
   devtools: { enabled: true, componentInspector: false },
   modules: [
@@ -43,6 +44,9 @@ export default defineNuxtConfig({
         path: '~/components',
         pathPrefix: false,
       },
+    ],
+    transformers: [
+      '~/transformers/reading-time',
     ],
   },
 

@@ -2,7 +2,6 @@
 title: HarmonyOS应用开发00 - 环境搭建
 description: HarmonyOS应用开发
 date: 2024-06-22
-duration: 20min
 lang: 鸿蒙
 ---
 ## 安装开发工具 - DevEco Studio

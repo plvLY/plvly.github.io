@@ -61,8 +61,8 @@ async function saveMd() {
 </script>
 
 <template>
-  <div class="max-w-180 mx-auto px-6 md:px-10 py-10 slide-enter-content">
-    <div class="max-w-140 mx-auto">
+  <div class="container-main slide-enter-content">
+    <div class="max-w-180 mx-auto">
       <div class="flex gap-2 items-center justify-center mb-6">
         <div class="flex-1 flex items-center rounded-lg border border-[var(--c-border)] overflow-hidden focus-within:border-[hsl(217,65%,55%)] transition-colors">
           <input

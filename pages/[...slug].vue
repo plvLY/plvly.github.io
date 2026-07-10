@@ -11,11 +11,13 @@ const [prev, next] = await queryContent()
     .where({_dir:"posts"})
     .sort({ date: -1})
     .findSurround(route.path)
+
+const tocLinks = computed(() => data.value?.body?.toc?.links ?? [])
 </script>
 
 <template>
-  <article class="px-6 md:px-10 py-10 slide-enter-content">
-    <div class="prose m-auto max-w-180">
+  <div class="layout-article slide-enter-content">
+    <div class="article-main">
       <ContentDoc :path="$route.path" v-slot="{ doc }">
         <article>
           <h1 class="mb-2 text-2xl font-bold">{{ doc.title }}</h1>
@@ -56,5 +58,92 @@ const [prev, next] = await queryContent()
         </div>
       </div>
     </div>
-  </article>
+
+    <aside v-if="tocLinks.length" class="toc-sidebar">
+      <div class="toc-label">目录</div>
+      <nav class="toc-nav">
+        <a
+          v-for="link in tocLinks"
+          :key="link.id"
+          :href="`#${link.id}`"
+          class="toc-link"
+          :style="{ paddingLeft: `${(link.depth - 2) * 0.75 + 0.5}rem` }"
+        >
+          {{ link.text }}
+        </a>
+      </nav>
+    </aside>
+  </div>
 </template>
+
+<style scoped>
+.layout-article {
+  display: grid;
+  grid-template-columns: 1fr 220px;
+  gap: 2.5rem;
+  max-width: min(92vw, 72rem);
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem;
+}
+
+.article-main {
+  min-width: 0;
+  max-width: 70ch;
+}
+
+.toc-sidebar {
+  position: sticky;
+  top: 5rem;
+  align-self: start;
+  max-height: calc(100vh - 6rem);
+  overflow-y: auto;
+  font-size: 0.875rem;
+}
+
+.toc-sidebar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.toc-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--c-text-tertiary);
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--c-border);
+}
+
+.toc-nav {
+  display: flex;
+  flex-direction: column;
+}
+
+.toc-link {
+  display: block;
+  padding-top: 0.35rem;
+  padding-bottom: 0.35rem;
+  text-decoration: none;
+  color: var(--c-text-tertiary);
+  transition: color 0.2s ease;
+  line-height: 1.4;
+  border-left: 2px solid transparent;
+}
+
+.toc-link:hover {
+  color: hsl(217, 65%, 55%);
+  border-left-color: hsl(217, 65%, 55%);
+}
+
+@media (max-width: 1024px) {
+  .layout-article {
+    grid-template-columns: 1fr;
+    max-width: 60rem;
+  }
+
+  .toc-sidebar {
+    display: none;
+  }
+}
+</style>
