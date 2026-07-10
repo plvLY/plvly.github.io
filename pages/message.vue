@@ -30,11 +30,9 @@ onMounted(async () => {
     msgList.value = rows
     if (queryErr) showError(queryErr)
 
-    if (addrRes?.data) {
-      const key = Object.keys(addrRes.data)[0]
-      ip.value = key
-      const loc = Object.values(addrRes.data)[0] as Record<string, string>
-      location.value = [loc.nation, loc.province, loc.city].filter(Boolean).join('·')
+    if (addrRes) {
+      ip.value = addrRes.ip ?? ''
+      location.value = [addrRes.nation, addrRes.province, addrRes.city].filter(Boolean).join('·')
     }
   } catch {
     showError('留言加载失败')

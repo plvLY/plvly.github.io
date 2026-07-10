@@ -7,15 +7,19 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: '无效留言' })
   }
 
+  const forwarded = getHeader(event, 'x-forwarded-for')
+  const realIp = getHeader(event, 'x-real-ip')
+  const serverIp = forwarded?.split(',')[0]?.trim() || realIp || ''
+
   try {
     const store = getStore('plv-blog')
     const messages = (await store.get('messages', { type: 'json' })) || []
     messages.unshift({
       id: crypto.randomUUID(),
       msg: body.msg.trim(),
-      ip: body.ip ?? '',
+      ip: serverIp || body.ip || '',
       date: body.date ?? '',
-      addr: body.city ?? '',
+      addr: body.addr ?? '',
     })
     await store.setJSON('messages', messages)
     return { rows: messages }
