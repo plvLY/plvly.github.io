@@ -1,4 +1,6 @@
-import type { StoredMessage } from '~/server/utils/messages'
+import { getStore } from '@netlify/blobs'
+import { getAllMessages, stripIps } from '../utils/messages'
+import type { StoredMessage } from '../utils/messages'
 
 export default defineEventHandler(async (event) => {
   const query = getQuery(event)

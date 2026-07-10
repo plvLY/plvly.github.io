@@ -1,3 +1,5 @@
+import { getAllMessages, stripIps } from '../utils/messages'
+
 export default defineEventHandler(async () => {
   try {
     const all = stripIps(await getAllMessages())

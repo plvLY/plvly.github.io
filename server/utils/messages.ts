@@ -29,8 +29,8 @@ export async function getAllMessages(): Promise<StoredMessage[]> {
 
   try {
     const legacy = await store.get('messages', { type: 'json' })
-    if (Array.isArray(legacy)) {
-      all.push(...legacy)
+    if (legacy && typeof legacy === 'object' && Array.isArray(legacy)) {
+      all.push(...legacy.filter(m => m && typeof m === 'object'))
     }
   } catch {}
 
