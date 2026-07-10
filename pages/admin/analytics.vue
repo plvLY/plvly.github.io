@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { DetailedStats, VisitRecord } from '~/types'
+import type { DetailedStats, VisitRecord, Message } from '~/types'
 
 definePageMeta({
   alias: ['/admin'],
@@ -88,6 +88,7 @@ function city(addr: string | null) {
 
 if (token.value) {
   fetchStats()
+  fetchMessages()
 }
 
 function maxCount(items: { count: number }[]) {
@@ -96,6 +97,35 @@ function maxCount(items: { count: number }[]) {
 
 function pct(count: number, items: { count: number }[]) {
   return (count / maxCount(items)) * 100
+}
+
+const messages = ref<Message[]>([])
+const messagesLoading = ref(false)
+const deletingId = ref<string | null>(null)
+
+async function fetchMessages() {
+  messagesLoading.value = true
+  try {
+    const { rows } = await $fetch<{ rows: Message[] }>('/api/db/query')
+    messages.value = rows
+  } catch {
+    messages.value = []
+  } finally {
+    messagesLoading.value = false
+  }
+}
+
+async function deleteMessage(id: string) {
+  if (!confirm('确定要删除这条留言吗？')) return
+  deletingId.value = id
+  try {
+    await $fetch(`/api/db/delete?id=${id}&token=${token.value}`, { method: 'DELETE' })
+    await fetchMessages()
+  } catch {
+    // silent
+  } finally {
+    deletingId.value = null
+  }
 }
 </script>
 
@@ -263,6 +293,53 @@ function pct(count: number, items: { count: number }[]) {
               >
                 &gt;
               </button>
+            </div>
+          </template>
+        </div>
+
+        <!-- message management -->
+        <div class="rounded-xl border border-[var(--c-border)] p-4 mt-4">
+          <h2 class="text-sm font-medium m-0 mb-3">
+            留言管理
+            <span class="text-[var(--c-text-tertiary)] font-normal">（共 {{ messages.length }} 条）</span>
+          </h2>
+
+          <div v-if="messagesLoading" class="text-sm text-[var(--c-text-tertiary)] py-4">加载中...</div>
+
+          <div v-else-if="!messages.length" class="text-sm text-[var(--c-text-tertiary)] py-4">暂无留言</div>
+
+          <template v-else>
+            <div class="overflow-x-auto">
+              <table class="w-full text-sm">
+                <thead>
+                  <tr class="text-[var(--c-text-tertiary)] border-b border-[var(--c-border)]">
+                    <th class="text-left font-normal py-2 pr-3">内容</th>
+                    <th class="text-left font-normal py-2 pr-3 w-26">归属地</th>
+                    <th class="text-left font-normal py-2 pr-3 w-22">时间</th>
+                    <th class="text-left font-normal py-2 w-16">操作</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    v-for="item in messages"
+                    :key="item.id"
+                    class="border-b border-[var(--c-border)] last:border-none"
+                  >
+                    <td class="py-2 pr-3 align-top truncate max-w-60">{{ item.msg }}</td>
+                    <td class="py-2 pr-3 align-top whitespace-nowrap">{{ item.addr || '-' }}</td>
+                    <td class="py-2 pr-3 align-top whitespace-nowrap text-[var(--c-text-tertiary)]">{{ fmtTime(item.date) }}</td>
+                    <td class="py-2 align-top">
+                      <button
+                        class="px-2 py-0.5 rounded text-xs border border-[var(--c-border)] transition-all duration-200 hover:border-red hover:text-red disabled:opacity-30"
+                        :disabled="deletingId === item.id"
+                        @click="deleteMessage(item.id)"
+                      >
+                        {{ deletingId === item.id ? '删除中' : '删除' }}
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </template>
         </div>
