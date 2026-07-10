@@ -3,6 +3,7 @@ title: Stable Audio Open 文生音频
 description: Stable Audio Open 文生音频
 date: 2024-09-29
 lang: AI
+collection: ai-tools
 author: plv
 ---
 

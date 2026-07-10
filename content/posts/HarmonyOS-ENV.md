@@ -3,6 +3,7 @@ title: HarmonyOS应用开发00 - 环境搭建
 description: HarmonyOS应用开发
 date: 2024-06-22
 lang: 鸿蒙
+collection: harmonyos
 ---
 ## 安装开发工具 - DevEco Studio
 > 下载地址地址：[DevEco Studio](https://developer.huawei.com/consumer/cn/deveco-studio/){:target="_blank"}

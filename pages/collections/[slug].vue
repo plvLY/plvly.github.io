@@ -2,27 +2,27 @@
 import { formatDate } from "~/composables/utils"
 import type { CollectionMeta } from "~/types"
 
-useHead({
-  title: '文章',
-})
-
-const getYear = (a: Date | string | number) => new Date(a).getFullYear()
-
 const route = useRoute()
-const viewAll = computed(() => route.query.view === 'all')
-
-const { data: list } = await useAsyncData('posts', () =>
-  queryContent('/posts').sort({ date: -1 } as const).find()
-)
+const slug = route.params.slug as string
 
 const { data: collectionsData } = await useAsyncData('collections', () =>
   queryContent('/collections').findOne()
 )
 
-function getArticleCount(posts: any[], slug: string): number {
-  if (slug === 'other') return posts.filter((p: any) => !p.collection).length
-  return posts.filter((p: any) => p.collection === slug).length
-}
+const meta = computed<CollectionMeta | undefined>(() => {
+  const configs = (collectionsData.value?.collections ?? []) as CollectionMeta[]
+  return configs.find(c => c.slug === slug)
+})
+
+useHead({
+  title: () => meta.value?.name ?? '合集不存在',
+})
+
+const getYear = (a: Date | string | number) => new Date(a).getFullYear()
+
+const { data: list } = await useAsyncData('posts', () =>
+  queryContent('/posts').find()
+)
 
 interface PostItem {
   path: string
@@ -32,15 +32,18 @@ interface PostItem {
   duration?: string
 }
 
-interface YearGroup {
-  year: number
-  posts: PostItem[]
-}
+const filteredPosts = computed(() => {
+  if (!meta.value) return []
+  const posts = list.value || []
+
+  return slug === 'other'
+    ? posts.filter(p => !p.collection)
+    : posts.filter(p => p.collection === slug)
+})
 
 const groupedByYear = computed(() => {
-  const posts = list.value || []
   const groups: Record<number, PostItem[]> = {}
-  for (const post of posts) {
+  for (const post of filteredPosts.value) {
     const year = getYear(post.date)
     if (!groups[year]) groups[year] = []
     groups[year].push({
@@ -55,54 +58,31 @@ const groupedByYear = computed(() => {
     .sort(([a], [b]) => +b - +a)
     .map(([year, posts]) => ({ year: +year, posts }))
 })
-
-const cards = computed(() => {
-  const posts = list.value || []
-  const configs = (collectionsData.value?.collections ?? []) as CollectionMeta[]
-  const result = configs
-    .filter(c => getArticleCount(posts, c.slug) > 0)
-    .map(c => ({ ...c, count: getArticleCount(posts, c.slug) }))
-  return result
-})
 </script>
 
 <template>
   <div class="container-main slide-enter-content">
-    <!-- View: Collection cards (default) -->
-    <template v-if="!viewAll">
-      <div class="collection-grid">
-        <RouterLink
-          v-for="card in cards"
-          :key="card.slug"
-          :to="`/collections/${card.slug}`"
-          class="collection-card"
-          :style="{ borderTopColor: card.color, '--card-color': card.color }"
-        >
-          <div class="card-inner">
-            <div :class="card.icon" class="card-icon" />
-            <h3 class="card-name">{{ card.name }}</h3>
-            <p class="card-count">{{ card.count }} 篇文章</p>
-            <p class="card-desc">{{ card.description }}</p>
-          </div>
-        </RouterLink>
-      </div>
-
-      <div class="view-all-link">
-        <RouterLink :to="{ path: '/posts', query: { view: 'all' } }" class="view-all-btn">
-          <span class="i-mdi-file-document-outline" />
-          查看全部文章
-          <span class="i-mdi-arrow-right" />
-        </RouterLink>
-      </div>
+    <!-- Invalid slug -->
+    <template v-if="!meta">
+      <p class="text-center text-[var(--c-text-tertiary)] py-20">
+        合集不存在
+      </p>
     </template>
 
-    <!-- View: All posts by year (time-line) -->
+    <!-- Valid collection -->
     <template v-else>
-      <div class="view-controls">
-        <RouterLink :to="'/posts'" class="back-btn">
+      <div class="collection-header">
+        <RouterLink to="/posts" class="back-link">
           <span class="i-mdi-arrow-left" />
-          合集视图
+          合集
         </RouterLink>
+
+        <div class="header-hero" :style="{ borderTopColor: meta.color }">
+          <div :class="meta.icon" class="hero-icon" :style="{ color: meta.color }" />
+          <h1 class="hero-title">{{ meta.name }}</h1>
+          <p class="hero-desc">{{ meta.description }}</p>
+          <p class="hero-count">{{ filteredPosts.length }} 篇文章</p>
+        </div>
       </div>
 
       <div v-for="group in groupedByYear" :key="group.year" class="year-group">
@@ -123,133 +103,65 @@ const cards = computed(() => {
           </RouterLink>
         </div>
       </div>
-    </template>
 
-    <p v-if="!list?.length" class="text-center text-[var(--c-text-tertiary)] py-20">
-      暂无文章
-    </p>
+      <p v-if="!groupedByYear.length" class="text-center text-[var(--c-text-tertiary)] py-20">
+        暂无文章
+      </p>
+    </template>
   </div>
 </template>
 
 <style scoped>
-.collection-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 1rem;
-}
-
-.collection-card {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 0.75rem;
-  padding: 2rem 1.5rem;
-  min-height: 180px;
-  text-decoration: none;
-  cursor: pointer;
-  background: var(--c-surface);
-  border: 1px solid var(--c-border);
-  border-top: 3px solid;
-  transition: all 0.25s ease;
-}
-
-.collection-card:hover {
-  background: var(--c-surface-hover);
-  border-color: var(--c-border-hover);
-  border-top-color: inherit;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-}
-
-.card-inner {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: 0.25rem;
-}
-
-.card-icon {
-  font-size: 1.75rem;
-  margin-bottom: 0.35rem;
-  color: var(--c-text-secondary);
-  transition: color 0.25s ease;
-}
-
-.collection-card:hover .card-icon {
-  color: var(--card-color);
-}
-
-.card-name {
-  font-size: 1rem;
-  font-weight: 600;
-  margin: 0;
-  line-height: 1.4;
-  color: var(--c-text-primary);
-}
-
-.card-count {
-  font-size: 0.8rem;
-  margin: 0;
-  color: var(--c-text-tertiary);
-}
-
-.card-desc {
-  font-size: 0.78rem;
-  margin: 0.5rem 0 0;
-  line-height: 1.4;
-  color: var(--c-text-tertiary);
-  max-height: 0;
-  overflow: hidden;
-  opacity: 0;
-  transition: all 0.3s ease;
-}
-
-.collection-card:hover .card-desc {
-  max-height: 3em;
-  opacity: 1;
-}
-
-.view-all-link {
-  margin-top: 3rem;
-  text-align: center;
-}
-
-.view-all-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  padding: 0.6rem 1.5rem;
-  border-radius: 2rem;
-  font-size: 0.9rem;
-  text-decoration: none;
-  color: var(--c-text-secondary);
-  border: 1px solid var(--c-border);
-  transition: all 0.2s ease;
-}
-
-.view-all-btn:hover {
-  color: hsl(217, 65%, 55%);
-  border-color: hsl(217, 65%, 55%);
-  background: var(--c-surface-hover);
-}
-
-.view-controls {
+.collection-header {
   margin-bottom: 2rem;
 }
 
-.back-btn {
+.back-link {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
   font-size: 0.875rem;
   text-decoration: none;
   color: var(--c-text-tertiary);
+  margin-bottom: 1rem;
   transition: color 0.2s ease;
 }
 
-.back-btn:hover {
+.back-link:hover {
   color: hsl(217, 65%, 55%);
+}
+
+.header-hero {
+  border-radius: 0.75rem;
+  padding: 2rem 2rem 1.75rem;
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-top: 3px solid;
+}
+
+.hero-icon {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.hero-title {
+  font-size: 1.375rem;
+  font-weight: 700;
+  margin: 0 0 0.2rem;
+  color: var(--c-text-primary);
+}
+
+.hero-desc {
+  font-size: 0.875rem;
+  margin: 0 0 0.2rem;
+  line-height: 1.4;
+  color: var(--c-text-secondary);
+}
+
+.hero-count {
+  font-size: 0.8rem;
+  margin: 0;
+  color: var(--c-text-tertiary);
 }
 
 .year-group {
@@ -371,8 +283,12 @@ const cards = computed(() => {
 }
 
 @media (max-width: 768px) {
-  .collection-grid {
-    grid-template-columns: 1fr;
+  .header-hero {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .hero-title {
+    font-size: 1.125rem;
   }
 
   .year-group {

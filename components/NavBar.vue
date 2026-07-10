@@ -36,7 +36,6 @@ function isActive(path: string) {
             :class="{ active: isActive(link.path) }"
           >
             <span class="lt-md:hidden">{{ link.title }}</span>
-            <div :class="link.icon" class="lt-md:hidden text-size-xl" />
           </RouterLink>
           <a href="https://gitee.com/plv-coding" target="_blank" title="Gitee" class="lt-md:hidden flex nav-link">
             <div class="i-mdi-gitlab text-size-xl" />

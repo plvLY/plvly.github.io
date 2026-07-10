@@ -3,6 +3,7 @@ title: HarmonyOS应用开发01 - 目录结构
 description: HarmonyOS应用开发
 date: 2024-06-22
 lang: 鸿蒙
+collection: harmonyos
 ---
 
 ## 目录结构

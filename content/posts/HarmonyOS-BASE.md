@@ -3,6 +3,7 @@ title: HarmonyOS应用开发02 - UI开发
 description: HarmonyOS应用开发
 date: 2024-06-22
 lang: 鸿蒙
+collection: harmonyos
 ---
 
 ## 一、开发语言 - ArkTS

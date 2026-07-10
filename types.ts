@@ -24,6 +24,18 @@ export interface DetailedStats {
   regions: { region: string; count: number }[]
 }
 
+export interface CollectionMeta {
+  slug: string
+  name: string
+  icon: string
+  description: string
+  color: string
+}
+
+export interface Collection extends CollectionMeta {
+  articleCount: number
+}
+
 export interface Post {
   path: string
   title: string

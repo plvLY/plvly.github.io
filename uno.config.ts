@@ -69,5 +69,9 @@ export default defineConfig({
         'i-ri-menu-2-fill',
         'container-main',
         'container-wide',
+        'i-mdi-cellphone-cog',
+        'i-mdi-sparkles',
+        'i-mdi-folder-text',
+        'i-mdi-folder',
     ],
 })

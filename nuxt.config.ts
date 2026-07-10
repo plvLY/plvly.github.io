@@ -18,7 +18,11 @@ export default defineNuxtConfig({
 
   mdc: {
     highlight: {
-      langs: ['dockerfile', 'java'],
+      langs: [
+        'dockerfile', 'java',
+        'js', 'ts', 'typescript', 'json', 'bash', 'yaml',
+        'css', 'html', 'vue', 'md',
+      ],
     },
   },
 

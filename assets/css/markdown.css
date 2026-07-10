@@ -70,6 +70,21 @@ html.dark .prose {
   margin: 0.5em 0;
 }
 
+.prose .shiki span {
+  color: var(--shiki-default, inherit);
+  background: var(--shiki-default-bg, transparent);
+  font-style: var(--shiki-default-font-style, normal);
+  font-weight: var(--shiki-default-font-weight, normal);
+  text-decoration: var(--shiki-default-text-decoration, none);
+}
+html.dark .prose .shiki span {
+  color: var(--shiki-dark, inherit);
+  background: var(--shiki-dark-bg, transparent);
+  font-style: var(--shiki-dark-font-style, normal);
+  font-weight: var(--shiki-dark-font-weight, normal);
+  text-decoration: var(--shiki-dark-text-decoration, none);
+}
+
 .prose img {
   width: 100%;
 }
