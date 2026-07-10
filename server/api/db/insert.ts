@@ -1,6 +1,6 @@
 import { getStore } from '@netlify/blobs'
 import { getGeoInfo, isBot } from '~/server/utils/analytics'
-import { getAllMessages, stripIps } from '~/server/utils/messages'
+import { stripIps } from '~/server/utils/messages'
 import type { StoredMessage } from '~/server/utils/messages'
 
 const RATE_INTERVAL = 30_000
@@ -48,7 +48,7 @@ export default defineEventHandler(async (event) => {
 
   // Honeypot: hidden field filled by bots
   if (body.website) {
-    return { rows: stripIps(await getAllMessages()) }
+    return { ok: true }
   }
 
   const ua = getHeader(event, 'user-agent') || ''
@@ -82,11 +82,20 @@ export default defineEventHandler(async (event) => {
   try {
     const store = getStore('plv-blog')
     const key = `messages:${now.toISOString().slice(0, 10)}`
-    const messages: StoredMessage[] = (await store.get(key, { type: 'json' })) || []
-    messages.unshift(msg)
-    await store.setJSON(key, messages)
+    const todayMessages: StoredMessage[] = (await store.get(key, { type: 'json' })) || []
+    todayMessages.unshift(msg)
+    await store.setJSON(key, todayMessages)
 
-    return { rows: stripIps(await getAllMessages()) }
+    const all: StoredMessage[] = [...todayMessages]
+    try {
+      const legacy = await store.get('messages', { type: 'json' })
+      if (Array.isArray(legacy)) {
+        all.push(...legacy.filter(m => m && typeof m === 'object'))
+      }
+    } catch {}
+    all.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+
+    return { rows: stripIps(all) }
   } catch {
     throw createError({ statusCode: 500, statusMessage: '留言保存失败，请稍后再试' })
   }
