@@ -32,21 +32,21 @@ function isActive(path: string) {
             :key="link.path"
             :to="link.path"
             :title="link.title"
-            class="nav-link"
+            class="flex nav-link"
             :class="{ active: isActive(link.path) }"
           >
             <span class="lt-md:hidden">{{ link.title }}</span>
-            <div :class="link.icon" class="md:hidden text-size-xl" />
+            <div :class="link.icon" class="lt-md:hidden text-size-xl" />
           </RouterLink>
-          <a href="https://gitee.com/plv-coding" target="_blank" title="Gitee" class="lt-md:hidden nav-link">
+          <a href="https://gitee.com/plv-coding" target="_blank" title="Gitee" class="lt-md:hidden flex nav-link">
             <div class="i-mdi-gitlab text-size-xl" />
           </a>
-          <a href="https://github.com/plvLY" target="_blank" title="GitHub" class="lt-md:hidden nav-link">
+          <a href="https://github.com/plvLY" target="_blank" title="GitHub" class="lt-md:hidden flex nav-link">
             <div class="i-mdi-github text-size-xl" />
           </a>
           <ToggleTheme />
           <button
-            class="hidden lt-md:flex nav-link text-size-xl"
+            class="md:hidden lt-md:flex nav-link text-size-xl"
             title="Menu"
             @click="toggleMobile()"
           >
@@ -117,11 +117,12 @@ function isActive(path: string) {
   transition: opacity 0.2s ease;
   opacity: 0.5;
   outline: none;
-  display: flex;
   align-items: center;
   gap: 0.25rem;
   padding: 0.25rem 0;
   font-size: 0.9375rem;
+  background: none;
+  border: none;
 }
 
 .nav-link:hover {
