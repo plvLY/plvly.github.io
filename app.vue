@@ -13,6 +13,8 @@
 <script setup lang="ts">
 import {StarportCarrier} from "vue-starport";
 
+useAnalytics()
+
 const appConfig = useAppConfig()
 
 useSeoMeta({

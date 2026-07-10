@@ -6,6 +6,24 @@ export interface Message {
   addr: string
 }
 
+export interface VisitRecord {
+  id: string
+  ip: string
+  addr: string | null
+  path: string
+  date: string
+  time: string
+  ua: string
+}
+
+export interface DetailedStats {
+  total: number
+  today: number
+  trend: { date: string; count: number }[]
+  topPages: { path: string; count: number }[]
+  regions: { region: string; count: number }[]
+}
+
 export interface Post {
   path: string
   title: string
