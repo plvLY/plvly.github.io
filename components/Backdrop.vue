@@ -13,34 +13,19 @@ onMounted(() => {
   >
     <div
       class="w-full h-full lt-md:hidden"
-      :class="prefersReduced ? '' : 'animate-glow'"
       :style="{
-        background: 'radial-gradient(ellipse 80% 60% at 50% -10%, hsl(217, 65%, 55%, 0.08) 0%, transparent 60%)',
+        backgroundImage: 'linear-gradient(var(--c-border) 1px, transparent 1px), linear-gradient(90deg, var(--c-border) 1px, transparent 1px)',
+        backgroundSize: '60px 60px',
+        opacity: prefersReduced ? 0.3 : 0.5,
       }"
     />
     <div
-      class="w-full h-full dark:lt-md:hidden hidden dark:block"
-      :class="prefersReduced ? '' : 'animate-glow'"
+      class="w-full h-full hidden dark:block lt-md:hidden"
       :style="{
-        background: 'radial-gradient(ellipse 80% 60% at 50% -10%, hsl(217, 70%, 65%, 0.06) 0%, transparent 60%)',
+        backgroundImage: 'linear-gradient(var(--c-border) 1px, transparent 1px), linear-gradient(90deg, var(--c-border) 1px, transparent 1px)',
+        backgroundSize: '60px 60px',
+        opacity: prefersReduced ? 0.15 : 0.3,
       }"
     />
   </div>
 </template>
-
-<style scoped>
-@keyframes glow {
-  0%, 100% {
-    opacity: 0.6;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.02);
-  }
-}
-
-.animate-glow {
-  animation: glow 8s ease-in-out infinite;
-}
-</style>

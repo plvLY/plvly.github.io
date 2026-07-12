@@ -6,6 +6,10 @@ import Blog from '~icons/carbon/blog'
 import LogoPython from '~icons/carbon/logo-python'
 import ConditionPoint from '~icons/carbon/condition-point'
 import Language from '~icons/carbon/language'
+import Ai from '~icons/carbon/ai'
+import Application from '~icons/carbon/application'
+import ServerProxy from '~icons/carbon/server-proxy'
+import ChartBar from '~icons/carbon/chart-bar'
 
 const registry: Record<string, Component> = {
   blog: markRaw(Blog),
@@ -15,6 +19,10 @@ const registry: Record<string, Component> = {
   logopython: markRaw(LogoPython),
   conditionpoint: markRaw(ConditionPoint),
   language: markRaw(Language),
+  ai: markRaw(Ai),
+  application: markRaw(Application),
+  serverproxy: markRaw(ServerProxy),
+  chartbar: markRaw(ChartBar),
 }
 
 const props = withDefaults(defineProps<{

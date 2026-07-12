@@ -6,17 +6,17 @@ projects:
       - name: Agentic Dashboard
         link: 'https://gitee.com/plv-coding/agentic-dashboard'
         desc: '智能政务驾驶舱：BI + Agent 双引擎驱动的领导决策支持系统'
-        icon: 'Blog'
+        icon: 'Ai'
     AI:
       - name: Agentic Dashboard
         link: 'https://gitee.com/plv-coding/agentic-dashboard'
         desc: '智能政务驾驶舱：BI + Agent 双引擎驱动的领导决策支持系统'
-        icon: 'Blog'
+        icon: 'Ai'
     前端:
       - name: plv.app
         link: 'https://gitee.com/plv-coding/plv.app'
         desc: '使用Nuxt3、vue3创建的个人站点2.0'
-        icon: 'Blog'
+        icon: 'Application'
       - name: plv.io
         link: 'https://github.com/plvLY/plvly.github.io'
         desc: '使用nuxt搭建的一个简约博客站点'
@@ -25,7 +25,7 @@ projects:
       - name: test001后端
         link: 'https://plv.netlify.app'
         desc: '测试占位'
-        icon: 'ConditionPoint'
+        icon: 'ServerProxy'
       - name: test001后端
         link: 'https://plv.netlify.app'
         desc: '测试占位'
@@ -34,6 +34,6 @@ projects:
       - name: 可视化
         link: 'https://gitee.com/plv-coding/python-demo'
         desc: '①冒泡排序可视化'
-        icon: 'LogoPython'
+        icon: 'ChartBar'
 
 ---

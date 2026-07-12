@@ -1,49 +1,33 @@
 ---
-title: Introduction
+title: 关于博客
 ---
 
-# website info
-::alert{type="warning"}
-站点基于 [antfu.me](https://antfu.me/){:target="_blank"}(作者：Anthony Fu)改造而成。
-::
-> 技术栈
+# plv.io
 
-`主要`
-- [x] Nuxt
-- [x] Vue3
-- [x] TS
-- [x] UnoCSS
+一个简约的个人技术博客。
 
-`部分插件`
-- [x] @iconify-json/mdi -- 图标
-- [x] vue-starport -- 一个代理组件：带有动画的跨路由共享组件
-- [x] @nuxt/content -- 使用 content/ 目录（Nuxt项目目录）创建一个基于文件的内容管理系统（CMS）
+## 博客简介
 
-> 描述
+plv.io 是基于 Nuxt 3 构建的个人技术博客，采用工业风设计。主要用于记录技术学习笔记、项目经验和思考总结。
 
-采用[Nuxt](https://nuxt.com/)构建该项目，使用[NuxtContent](https://content.nuxt.com/)基于文件路由，生成对应的页面。
-- [x] 启用Nuxt Content
-  在你的项目中安装@nuxt/content模块，并通过以下命令将其添加到nuxt.config.ts中
-```bash 
-npx nuxi module add content
-```
-- [x] 配置文件-nuxt.config.ts：
-```ts
-export default defineNuxtConfig({
-  modules: [
-    //...
-    "@nuxt/content",
-  ]
-})
-```
-- [x] 目录-创建内容：
-  将Markdown文件放在content/目录中（NuxtContent默认读取content下的markdown文件，渲染对应的页面）
-- [x] 创建catch-all路由(采用ContentDoc组件)--渲染
-```vue
-// pages/[...slug].vue
-<template>
-  <main>
-    <ContentDoc :path="$route.path"></ContentDoc>
-  </main>
-</template>
-```
+## 功能
+
+- 文章发布与分类浏览
+- 项目展示与 Demo 链接
+- 留言板互动
+- 暗色/亮色模式切换
+- 响应式布局，支持移动端
+
+## 技术栈
+
+| 类别 | 技术 |
+|------|------|
+| 框架 | Nuxt 3 |
+| UI 层 | Vue 3 + UnoCSS |
+| 内容管理 | Nuxt Content |
+| 图标 | Iconify (Carbon + MDI) |
+| 部署 | Vercel / Netlify |
+
+## 致谢
+
+本站设计灵感来自 [antfu.me](https://antfu.me/)（作者：Anthony Fu）。

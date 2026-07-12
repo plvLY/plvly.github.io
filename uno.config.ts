@@ -16,11 +16,13 @@ export default defineConfig({
             'border-base': 'border-[var(--c-border)]',
             'container-main': 'max-w-240 mx-auto px-5 md:px-8 py-10',
             'container-wide': 'max-w-300 mx-auto px-5 md:px-8 py-10',
+            'container-narrow': 'max-w-208 mx-auto px-5 md:px-8 py-10',
         },
         [/^btn-(\w+)$/, ([_, color]) => `op50 px2.5 py1 transition-all duration-200 ease-out no-underline! hover:(op100 text-${color} bg-${color}/10) border border-base! rounded`],
     ],
     theme: {
         colors: {
+            'signal': 'var(--c-signal)',
             'brand': {
                 'primary': 'hsl(217, 65%, 55%)',
                 'subtle': 'hsl(217, 65%, 55% / 0.08)',

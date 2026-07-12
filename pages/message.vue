@@ -77,7 +77,7 @@ async function saveMd() {
             :disabled="loading || cooldown || !msg"
             @click="saveMd"
           >
-            <PIcon name="SendAltFilled" class-name="w-4 align-middle" :class="msg ? 'text-[hsl(217,65%,55%)]' : ''" />
+            <PIcon name="SendAltFilled" class-name="w-4 h-4 align-middle" :class="msg ? 'text-[hsl(217,65%,55%)]' : ''" />
             <span class="hidden sm:inline">{{ cooldown ? '冷却中' : '发送' }}</span>
           </button>
         </div>
@@ -100,7 +100,7 @@ async function saveMd() {
               v-if="item.addr"
               class="flex items-center gap-1 flex-none rounded px-1.5 py-0.5 bg-[var(--c-border)]"
             >
-              <PIcon name="LocationFilled" class-name="w-3 align-middle" />
+              <PIcon name="LocationFilled" class-name="w-3 h-3 align-middle" />
               {{ item.addr }}
             </span>
           </div>

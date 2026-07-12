@@ -10,7 +10,7 @@ function toggleMobile() {
 const navLinks = [
   { path: '/', title: '首页', icon: 'i-mdi-home' },
   { path: '/posts', title: '文章', icon: 'i-mdi-file-document' },
-  { path: '/projects', title: 'Demo', icon: 'i-mdi-folder-cog' },
+  { path: '/projects', title: '项目', icon: 'i-mdi-folder-cog' },
   { path: '/info', title: '关于', icon: 'i-mdi-information' },
   { path: '/message', title: '留言', icon: 'i-mdi-message-text' },
 ]
@@ -114,18 +114,20 @@ function isActive(path: string) {
   text-decoration: none;
   color: inherit;
   transition: opacity 0.2s ease;
-  opacity: 0.5;
+  opacity: 0.55;
   outline: none;
   align-items: center;
   gap: 0.25rem;
-  padding: 0.25rem 0;
+  padding: 0.25rem 0.35rem;
   font-size: 0.9375rem;
+  border-radius: 4px;
   background: none;
   border: none;
 }
 
 .nav-link:hover {
-  opacity: 0.8;
+  opacity: 0.85;
+  background: var(--c-surface-hover);
 }
 
 .nav-link.active {

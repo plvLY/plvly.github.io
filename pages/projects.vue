@@ -50,7 +50,7 @@ function slug(name: string): string {
           :title="item.name"
         >
           <div class="flex-none">
-            <PIcon :name="item.icon || 'BookmarkFilled'" class-name="w-8 p-1.5 rounded-lg bg-[var(--c-border)] text-[var(--c-text-tertiary)] transition-colors" />
+            <PIcon :name="item.icon || 'BookmarkFilled'" class-name="w-10 h-10 p-2 rounded-lg bg-[var(--c-surface)] text-[var(--c-signal)] transition-colors group-hover:text-[var(--c-text-primary)]" />
           </div>
           <div class="flex-auto min-w-0">
             <div class="text-sm font-medium truncate transition-colors">{{ item.name }}</div>
