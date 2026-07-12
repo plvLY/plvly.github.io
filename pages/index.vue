@@ -58,6 +58,7 @@ const postCount = computed(() => allPosts.value?.length ?? 0)
               <span class="stat-label">访客</span>
               <span class="stat-value">{{ count.toLocaleString() }}</span>
               <span class="stat-unit">人次</span>
+              <span class="text-[var(--c-text-tertiary)]" >[自2026-07-10起]</span>
             </span>
           </client-only>
           <span class="stat-row">
