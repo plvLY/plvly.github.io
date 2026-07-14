@@ -1,5 +1,6 @@
 import { getStore } from '@netlify/blobs'
 import { getGeoFromHeaders, isBot } from '~/server/utils/analytics'
+import { getGeoFromIp } from '~/server/utils/geo'
 import { stripIps } from '~/server/utils/messages'
 import type { StoredMessage } from '~/server/utils/messages'
 
@@ -67,7 +68,10 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 429, statusMessage: rate.message })
   }
 
-  const geo = getGeoFromHeaders(event)
+  let geo = getGeoFromHeaders(event)
+  if (!geo) {
+    geo = await getGeoFromIp(ip)
+  }
   const addr = geo ? [geo.nation, geo.province, geo.city].filter(Boolean).join('·') : ''
 
   const now = new Date()
