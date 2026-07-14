@@ -8,6 +8,7 @@
 - [x] Vue3
 - [x] TS
 - [x] UnoCSS - 高性能且极具灵活性的即时原子化 CSS 引擎
+- [x] @netlify/blobs - 本地开发通过本地 BlobsServer 模拟，生产环境使用 Netlify Blobs 服务
 
 ### 开发工具
 - node - 18.14.1
@@ -18,6 +19,7 @@
 
 ### 部署 - Netlify
 > 零配置部署 Netlify
+> 本地开发自动启动 BlobsServer 模拟存储；Netlify 构建/部署时自动跳过，使用平台 Blobs 服务。
 1. 访问 Netlify 网站并注册：https://www.netlify.com/
 2. 登录你的 Netlify 账号。
 3. 在 Netlify 的顶部菜单栏点击 “GitHub” 或 “GitLab” 图标进行登录。（绑定GitHub&GitLab）
