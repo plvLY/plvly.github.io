@@ -55,6 +55,7 @@ export default defineNitroPlugin(async () => {
   const getEnv = (key: string) =>
     Netlify?.env?.get?.(key) ?? Deno?.env?.get?.(key) ?? proc?.env?.[key]
   if (getEnv('NETLIFY_BLOBS_CONTEXT')) return
+  if (proc?.env?.NETLIFY === 'true' && proc?.env?.NETLIFY_LOCAL !== 'true') return
 
   const token = 'local-dev-token'
   const directory = '.netlify/blobs-serve'
