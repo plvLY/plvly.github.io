@@ -1,43 +1,25 @@
-import { $fetch } from "ofetch"
 import { getStore } from '@netlify/blobs'
 import type { VisitRecord, DetailedStats } from '~/types'
 
 const STORE_NAME = 'plv-blog'
 
-const geoCache = new Map<string, { data: GeoResult | null; time: number }>()
-const GEO_TTL = 60_000
-
 interface GeoResult {
-  ip: string
   nation: string
   province: string
   city: string
 }
 
-export async function getGeoInfo(ip: string): Promise<GeoResult | null> {
-  if (!ip) return null
-  const cached = geoCache.get(ip)
-  if (cached && Date.now() - cached.time < GEO_TTL) return cached.data
+export function getGeoFromHeaders(event: any): GeoResult | null {
+  const nation = getHeader(event, 'x-nf-client-country')
+  const province = getHeader(event, 'x-nf-client-region')
+  const city = getHeader(event, 'x-nf-client-city')
 
-  try {
-    const address = await $fetch(`http://ip-api.com/json/${ip}?lang=zh-CN&fields=status,country,regionName,city,query`, {
-      retry: 1,
-      retryDelay: 500,
-    }) as any
+  if (!nation) return null
 
-    if (address?.status === 'success') {
-      const result = {
-        ip: address.query,
-        nation: address.country,
-        province: address.regionName,
-        city: address.city,
-      }
-      geoCache.set(ip, { data: result, time: Date.now() })
-      return result
-    }
-    return null
-  } catch {
-    return null
+  return {
+    nation,
+    province: province || '',
+    city: city || '',
   }
 }
 
@@ -49,13 +31,40 @@ export function isBot(ua: string): boolean {
 
 const publicCache: { data: number | null; time: number } = { data: null, time: 0 }
 
-export async function addVisit(record: VisitRecord) {
+export async function addVisit(record: VisitRecord, event: any) {
   const store = getStore(STORE_NAME)
   const today = new Date().toISOString().slice(0, 10)
-  const key = `analytics:visits:${today}`
-  const visits: VisitRecord[] = (await store.get(key, { type: 'json' })) || []
-  visits.unshift(record)
-  await store.setJSON(key, visits)
+
+  // 1. Flattened storage for detailed records (eliminate race conditions on record list)
+  const recordKey = `analytics:visit:${today}:${record.id}`
+  await store.setJSON(recordKey, record)
+
+  // 2. Pre-aggregate totals (Accept slight race condition on totals, but O(1) read)
+  const totalKey = 'analytics:global_total'
+  const total = (await store.get(totalKey, { type: 'json' })) || 0
+  await store.setJSON(totalKey, total + 1)
+
+  // 3. Pre-aggregate daily trends
+  const summaryKey = 'analytics:daily_summary'
+  const summary: Record<string, number> = (await store.get(summaryKey, { type: 'json' })) || {}
+  summary[today] = (summary[today] || 0) + 1
+  await store.setJSON(summaryKey, summary)
+
+  // 4. Pre-aggregate page counts
+  const pageKey = 'analytics:page_counts'
+  const pageCounts: Record<string, number> = (await store.get(pageKey, { type: 'json' })) || {}
+  pageCounts[record.path] = (pageCounts[record.path] || 0) + 1
+  await store.setJSON(pageKey, pageCounts)
+
+  // 5. Pre-aggregate region counts
+  if (record.addr) {
+    const regionKey = 'analytics:region_counts'
+    const regionCounts: Record<string, number> = (await store.get(regionKey, { type: 'json' })) || {}
+    const region = record.addr.split('·')[0] === '中国' ? (record.addr.split('·')[1] || '中国') : record.addr.split('·')[0]
+    regionCounts[region] = (regionCounts[region] || 0) + 1
+    await store.setJSON(regionKey, regionCounts)
+  }
+
   publicCache.data = null
 }
 
@@ -68,54 +77,44 @@ export async function getDetailedStats(): Promise<DetailedStats> {
   }
 
   const store = getStore(STORE_NAME)
-  const dailyCounts: Record<string, number> = {}
-  const pageCounts: Record<string, number> = {}
-  const regionCounts: Record<string, number> = {}
-  let total = 0
-  const todayStr = new Date().toISOString().slice(0, 10)
-  let todayCount = 0
-
+  
   try {
-    const result = await store.list({ prefix: 'analytics:visits:' })
-    for (const blob of result.blobs) {
-      const date = (blob.key as string).replace('analytics:visits:', '')
-      const visits: VisitRecord[] = (await store.get(blob.key as string, { type: 'json' })) || []
-      const count = visits.length
-      total += count
-      dailyCounts[date] = count
-      if (date === todayStr) todayCount = count
+    const total = (await store.get('analytics:global_total', { type: 'json' })) || 0
+    const dailySummary: Record<string, number> = (await store.get('analytics:daily_summary', { type: 'json' })) || {}
+    const pageCounts: Record<string, number> = (await store.get('analytics:page_counts', { type: 'json' })) || {}
+    const regionCounts: Record<string, number> = (await store.get('analytics:region_counts', { type: 'json' })) || {}
+    
+    const todayStr = new Date().toISOString().slice(0, 10)
+    const todayCount = dailySummary[todayStr] || 0
 
-      for (const v of visits) {
-        pageCounts[v.path] = (pageCounts[v.path] || 0) + 1
-        if (v.addr) {
-          const parts = v.addr.split('·')
-          const region = parts[0] === '中国' ? (parts[1] || '中国') : parts[0]
-          regionCounts[region] = (regionCounts[region] || 0) + 1
-        }
-      }
+    const sortedDates = Object.entries(dailySummary)
+      .sort(([a], [b]) => a.localeCompare(b))
+      .slice(-30)
+
+    const topPages = Object.entries(pageCounts)
+      .sort(([, a], [, b]) => b - a)
+      .slice(0, 10)
+      .map(([path, count]) => ({ path, count }))
+
+    const regions = Object.entries(regionCounts)
+      .sort(([, a], [, b]) => b - a)
+      .map(([region, count]) => ({ region, count }))
+
+    const result: DetailedStats = {
+      total,
+      today: todayCount,
+      trend: sortedDates.map(([date, count]) => ({ date, count })),
+      topPages,
+      regions,
     }
-  } catch {}
 
-  const sortedDates = Object.entries(dailyCounts).sort(([a], [b]) => a.localeCompare(b)).slice(-30)
-  const topPages = Object.entries(pageCounts)
-    .sort(([, a], [, b]) => b - a).slice(0, 10)
-    .map(([path, count]) => ({ path, count }))
-
-  const regions = Object.entries(regionCounts)
-    .sort(([, a], [, b]) => b - a)
-    .map(([region, count]) => ({ region, count }))
-
-  const result: DetailedStats = {
-    total,
-    today: todayCount,
-    trend: sortedDates.map(([date, count]) => ({ date, count })),
-    topPages,
-    regions,
+    statsCache.data = result
+    statsCache.time = now
+    return result
+  } catch (e) {
+    console.error('Failed to fetch detailed stats:', e)
+    return { total: 0, today: 0, trend: [], topPages: [], regions: [] }
   }
-
-  statsCache.data = result
-  statsCache.time = now
-  return result
 }
 
 export async function getPublicTotal(): Promise<number> {
@@ -125,17 +124,12 @@ export async function getPublicTotal(): Promise<number> {
   }
 
   const store = getStore(STORE_NAME)
-  let total = 0
-
   try {
-    const result = await store.list({ prefix: 'analytics:visits:' })
-    for (const blob of result.blobs) {
-      const visits: VisitRecord[] = (await store.get(blob.key as string, { type: 'json' })) || []
-      total += visits.length
-    }
-  } catch {}
-
-  publicCache.data = total
-  publicCache.time = now
-  return total
+    const total = (await store.get('analytics:global_total', { type: 'json' })) || 0
+    publicCache.data = total
+    publicCache.time = now
+    return total
+  } catch {
+    return 0
+  }
 }

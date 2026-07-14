@@ -1,3 +1,4 @@
+import { getGeoFromHeaders, isBot, addVisit } from '~/server/utils/analytics'
 import type { VisitRecord } from '~/types'
 
 export default defineEventHandler(async (event) => {
@@ -11,7 +12,7 @@ export default defineEventHandler(async (event) => {
   const realIp = getHeader(event, 'x-real-ip')
   const ip = forwarded?.split(',')[0]?.trim() || realIp || ''
 
-  const geo = ip ? await getGeoInfo(ip) : null
+  const geo = getGeoFromHeaders(event)
   const addr = geo ? [geo.nation, geo.province, geo.city].filter(Boolean).join('·') : null
 
   const now = new Date()
@@ -25,7 +26,7 @@ export default defineEventHandler(async (event) => {
     ua: ua.slice(0, 200),
   }
 
-  await addVisit(record)
+  await addVisit(record, event)
 
   return { ok: true }
 })

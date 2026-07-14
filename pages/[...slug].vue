@@ -1,4 +1,4 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import { formatDate } from '~/composables/utils'
 import type { CollectionMeta } from '~/types'
 
@@ -99,9 +99,7 @@ onUnmounted(() => {
               <span>{{ backLink.label }}</span>
             </RouterLink>
           </div>
-          <div class="prose">
-            <ContentRenderer :value="doc" />
-          </div>
+          <div class="prose"><MermaidWrapper><ContentRenderer :value="doc" /></MermaidWrapper></div>
         </article>
       </ContentDoc>
 
@@ -130,7 +128,7 @@ onUnmounted(() => {
     </div>
 
     <aside v-if="tocLinks.length" class="toc-sidebar">
-      <div class="toc-label">目录</div>
+      <div class="toc-label">鐩綍</div>
       <nav class="toc-nav">
         <a
           v-for="link in tocLinks"
@@ -249,3 +247,4 @@ onUnmounted(() => {
   box-shadow: 0 4px 16px rgba(0,0,0,.12);
 }
 </style>
+

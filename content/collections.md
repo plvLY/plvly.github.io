@@ -5,6 +5,11 @@ collections:
     icon: i-mdi-sparkles
     description: 生成式 AI 工具的本地部署与使用指南。
     color: 'hsl(270, 50%, 55%)'
+  - slug: ai-dev
+    name: AI 开发
+    icon: i-mdi-robot
+    description: AI 应用开发、Agent 构建与 AI 增强编程实践。
+    color: 'hsl(190, 60%, 50%)'
   - slug: project-doc  
     name: 项目文档
     icon: i-mdi-folder-text

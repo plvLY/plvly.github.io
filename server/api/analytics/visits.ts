@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
   const secret = process.env.ANALYTICS_SECRET
 
   if (!secret || token !== secret) {
-    throw createError({ statusCode: 401, statusMessage: 'Unauthorized' })
+    throw createApiError('Unauthorized access to visit logs', 'AUTH_FAILED', 401)
   }
 
   const page = Math.max(1, parseInt(query.page as string) || 1)
@@ -22,12 +22,19 @@ export default defineEventHandler(async (event) => {
   let all: VisitRecord[] = []
 
   try {
-    const result = await store.list({ prefix: 'analytics:visits:' })
+    // New prefix for flattened storage
+    const result = await store.list({ prefix: 'analytics:visit:' })
     for (const blob of result.blobs) {
-      const date = (blob.key as string).replace('analytics:visits:', '')
+      const key = blob.key as string
+      // Key format: analytics:visit:YYYY-MM-DD:UUID
+      const parts = key.split(':')
+      if (parts.length < 3) continue
+
+      const date = parts[2]
       if (date < cutoffStr) continue
-      const visits: VisitRecord[] = (await store.get(blob.key as string, { type: 'json' })) || []
-      all.push(...visits)
+
+      const record: VisitRecord = (await store.get(key, { type: 'json' })) || null
+      if (record) all.push(record)
     }
   } catch {}
 

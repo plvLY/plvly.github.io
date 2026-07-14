@@ -1,26 +1,5 @@
 <script setup lang="ts">
-const clickTimes: number[] = []
-const adminMsg = ref('')
-
-function triggerAdmin() {
-  const now = Date.now()
-  clickTimes.push(now)
-  const recent = clickTimes.filter(t => now - t < 3000)
-  clickTimes.length = 0
-  clickTimes.push(...recent)
-
-  if (recent.length >= 5) {
-    const skip = localStorage.getItem('plv_skip_analytics')
-    if (skip) {
-      localStorage.removeItem('plv_skip_analytics')
-      adminMsg.value = '访客统计已开启'
-    } else {
-      localStorage.setItem('plv_skip_analytics', '1')
-      adminMsg.value = '访客统计已关闭（仅供站长）'
-    }
-    setTimeout(() => { adminMsg.value = '' }, 3000)
-  }
-}
+const { adminMsg, trigger: triggerAdmin } = useAdminTrigger()
 
 const { data: allPosts } = await useAsyncData('home-posts-count', () =>
   queryContent('/posts').find()

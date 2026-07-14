@@ -4,7 +4,7 @@ export default defineEventHandler(async (event) => {
   const secret = process.env.ANALYTICS_SECRET
 
   if (!secret || token !== secret) {
-    throw createError({ statusCode: 401, statusMessage: 'Unauthorized' })
+    throw createApiError('Unauthorized access to analytics stats', 'AUTH_FAILED', 401)
   }
 
   const stats = await getDetailedStats()
