@@ -21,7 +21,7 @@ export default defineNuxtConfig({
       langs: [
         'dockerfile', 'java',
         'js', 'ts', 'typescript', 'json', 'bash', 'yaml',
-        'css', 'html', 'vue', 'md',
+        'css', 'html', 'vue', 'md','sql','http'
       ],
     },
   },

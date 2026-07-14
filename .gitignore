@@ -26,3 +26,6 @@ logs
 pnpm-lock.yaml
 
 # Netlify build output.netlify/
+
+# Local Netlify folder
+.netlify

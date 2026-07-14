@@ -340,7 +340,7 @@ Nitro 服务端提供以下功能接口，均通过 HTTP 访问：
 
 ```bash
 # 1. 克隆仓库
-git clone <repo-url>
+git clone https://gitee.com/plv-coding/plv.io.git
 cd plv.io
 
 # 2. 安装依赖
