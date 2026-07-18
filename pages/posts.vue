@@ -50,6 +50,18 @@ const cards = computed(() => {
     .map(c => ({ ...c, count: getArticleCount(posts, c.slug) }))
   return result
 })
+
+const latestPosts = computed(() => {
+  const posts = (list.value || []) as Post[]
+  const configs = (collectionsData.value?.collections ?? []) as CollectionMeta[]
+  return posts
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    .slice(0, 5)
+    .map(p => ({
+      ...p,
+      collectionName: configs.find(c => c.slug === p.collection)?.name
+    }))
+})
 </script>
 
 <template>
@@ -72,6 +84,26 @@ const cards = computed(() => {
           </div>
         </RouterLink>
       </div>
+
+      <section v-if="latestPosts.length" class="latest-section">
+        <h2 class="latest-heading">最新文章</h2>
+        <div class="latest-list">
+          <RouterLink
+            v-for="post in latestPosts"
+            :key="post._path || post.path"
+            :to="post._path || post.path"
+            class="latest-item"
+          >
+            <span class="latest-date">{{ formatDate(post.date, true) }}</span>
+            <span class="latest-title">{{ post.title }}</span>
+            <span class="latest-meta">
+              <span v-if="post.collectionName" class="latest-tag">{{ post.collectionName }}</span>
+              <span v-if="post.lang" class="latest-tag">{{ post.lang }}</span>
+              <span v-if="post.duration" class="latest-duration">{{ post.duration }}</span>
+            </span>
+          </RouterLink>
+        </div>
+      </section>
 
       <div class="view-all-link">
         <RouterLink :to="{ path: '/posts', query: { view: 'all' } }" class="view-all-btn">
@@ -181,6 +213,94 @@ const cards = computed(() => {
 
 .collection-card:hover .card-desc {
   max-height: 3em;
+  opacity: 1;
+}
+
+.latest-section {
+  margin-top: 3rem;
+}
+
+.latest-heading {
+  font-size: 0.8125rem;
+  font-weight: 400;
+  letter-spacing: 0.15em;
+  color: var(--c-text-tertiary);
+  margin: 0 0 0.75rem;
+  user-select: none;
+}
+
+.latest-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.latest-item {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  padding: 0.6rem 0.8rem;
+  border-radius: 0.5rem;
+  text-decoration: none;
+  color: inherit;
+  transition: background 0.2s ease;
+}
+
+.latest-item:hover {
+  background: var(--c-surface-hover);
+}
+
+.latest-date {
+  font-size: 0.8rem;
+  color: var(--c-text-tertiary);
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+  width: 3.2rem;
+  text-align: right;
+}
+
+.latest-title {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.latest-item:hover .latest-title {
+  color: hsl(217, 65%, 55%);
+}
+
+.latest-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-shrink: 0;
+}
+
+.latest-tag {
+  font-size: 0.7rem;
+  padding: 0.15rem 0.45rem;
+  border-radius: 0.25rem;
+  background: var(--c-border);
+  color: var(--c-text-secondary);
+  opacity: 0.6;
+}
+
+.latest-duration {
+  font-size: 0.7rem;
+  color: var(--c-text-tertiary);
+  padding: 0.15rem 0.45rem;
+  border-radius: 0.25rem;
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  opacity: 0.6;
+}
+
+.latest-item:hover .latest-tag,
+.latest-item:hover .latest-duration {
   opacity: 1;
 }
 
