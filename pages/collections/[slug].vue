@@ -35,6 +35,8 @@ const filteredPosts = computed(() => {
   return filtered.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
 })
 
+const { pageCounts } = usePageCounts()
+
 const groupedByYear = computed(() => {
   const groups: Record<number, Post[]> = {}
   for (const post of filteredPosts.value) {
@@ -78,6 +80,7 @@ const groupedByYear = computed(() => {
         :key="group.year"
         :year="group.year"
         :posts="group.posts"
+        :page-counts="pageCounts"
       />
 
       <p v-if="!groupedByYear.length" class="text-center text-[var(--c-text-tertiary)] py-20">

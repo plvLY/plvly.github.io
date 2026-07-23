@@ -117,6 +117,34 @@ export async function getDetailedStats(): Promise<DetailedStats> {
   }
 }
 
+const pageCountsCache: { data: Record<string, number> | null; time: number } = { data: null, time: 0 }
+
+export async function addPageView(path: string) {
+  const store = getStore(STORE_NAME)
+  const pageKey = 'analytics:page_counts'
+  const pageCounts: Record<string, number> = (await store.get(pageKey, { type: 'json' })) || {}
+  pageCounts[path] = (pageCounts[path] || 0) + 1
+  await store.setJSON(pageKey, pageCounts)
+  pageCountsCache.data = null
+}
+
+export async function getPageCounts(): Promise<Record<string, number>> {
+  const now = Date.now()
+  if (pageCountsCache.data !== null && now - pageCountsCache.time < 60_000) {
+    return pageCountsCache.data
+  }
+
+  const store = getStore(STORE_NAME)
+  try {
+    const pageCounts: Record<string, number> = (await store.get('analytics:page_counts', { type: 'json' })) || {}
+    pageCountsCache.data = pageCounts
+    pageCountsCache.time = now
+    return pageCounts
+  } catch {
+    return {}
+  }
+}
+
 export async function getPublicTotal(): Promise<number> {
   const now = Date.now()
   if (publicCache.data !== null && now - publicCache.time < 60_000) {

@@ -51,6 +51,8 @@ const cards = computed(() => {
   return result
 })
 
+const { pageCounts } = usePageCounts()
+
 const latestPosts = computed(() => {
   const posts = (list.value || []) as Post[]
   const configs = (collectionsData.value?.collections ?? []) as CollectionMeta[]
@@ -100,6 +102,10 @@ const latestPosts = computed(() => {
               <span v-if="post.collectionName" class="latest-tag">{{ post.collectionName }}</span>
               <span v-if="post.lang" class="latest-tag">{{ post.lang }}</span>
               <span v-if="post.duration" class="latest-duration">{{ post.duration }}</span>
+              <span v-if="pageCounts[post._path || post.path] != null" class="latest-views">
+                <span class="i-mdi-eye-outline" />
+                {{ pageCounts[post._path || post.path] }}
+              </span>
             </span>
           </RouterLink>
         </div>
@@ -128,6 +134,7 @@ const latestPosts = computed(() => {
         :key="group.year"
         :year="group.year"
         :posts="group.posts"
+        :page-counts="pageCounts"
       />
     </template>
 
@@ -299,8 +306,22 @@ const latestPosts = computed(() => {
   opacity: 0.6;
 }
 
+.latest-views {
+  font-size: 0.7rem;
+  color: var(--c-text-tertiary);
+  padding: 0.15rem 0.45rem;
+  border-radius: 0.25rem;
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  opacity: 0.6;
+}
+
 .latest-item:hover .latest-tag,
-.latest-item:hover .latest-duration {
+.latest-item:hover .latest-duration,
+.latest-item:hover .latest-views {
   opacity: 1;
 }
 

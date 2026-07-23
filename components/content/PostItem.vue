@@ -4,6 +4,7 @@ import type { Post } from "~/types"
 
 defineProps<{
   post: Post
+  count?: number
 }>()
 </script>
 
@@ -17,6 +18,10 @@ defineProps<{
     <span class="post-title">{{ post.title }}</span>
     <span v-if="post.lang" class="post-lang">{{ post.lang }}</span>
     <span v-if="post.duration" class="post-duration">{{ post.duration }}</span>
+    <span v-if="count != null" class="post-views">
+      <span class="i-mdi-eye-outline post-views-icon" />
+      {{ count }}
+    </span>
   </RouterLink>
 </template>
 
@@ -108,5 +113,28 @@ defineProps<{
 
 .post-item:hover .post-duration {
   opacity: 1;
+}
+
+.post-views {
+  font-size: 0.7rem;
+  color: var(--c-text-tertiary);
+  flex-shrink: 0;
+  padding: 0.15rem 0.45rem;
+  border-radius: 0.25rem;
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  opacity: 0.6;
+  transition: opacity 0.2s ease;
+}
+
+.post-item:hover .post-views {
+  opacity: 1;
+}
+
+.post-views-icon {
+  font-size: 0.8rem;
 }
 </style>

@@ -4,6 +4,7 @@ import type { Post } from "~/types"
 defineProps<{
   year: number
   posts: Post[]
+  pageCounts?: Record<string, number>
 }>()
 </script>
 
@@ -16,6 +17,7 @@ defineProps<{
         v-for="post in posts"
         :key="post.path"
         :post="post"
+        :count="pageCounts?.[post._path || post.path]"
       />
     </div>
   </div>
